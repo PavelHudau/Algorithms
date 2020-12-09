@@ -23,4 +23,4 @@ jobs:
     - name: Percolation - Build with Maven
       run: cd Percolation && mvn -B package --file pom.xml
     - name: Percolation - Test with Maven
-      run: cd Percolation && mvn test
+      run: mvn -Dtest="src/*Test" test
