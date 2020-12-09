@@ -6,7 +6,7 @@ public class Percolation {
     private int[] ids;
     private int n;
     private int openSitesCnt = 0;
-    private Map<Integer, Integer> rootToTreeSize = new HashMap<Integer, Integer>();
+    private Map<Integer, Integer> rootToTreeSize = new HashMap<>();
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {

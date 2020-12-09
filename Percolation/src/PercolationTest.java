@@ -6,23 +6,23 @@ class PercolationTest {
 
     @Test
     void open_simple() {
-        Percolation percolation = new Percolation( 5);
-        percolation.open(2,3);
-        percolation.isOpen(2,3);
+        Percolation percolation = new Percolation(5);
+        percolation.open(2, 3);
+        percolation.isOpen(2, 3);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5})
     void open_edge_cases(int n) {
-        Percolation percolation = new Percolation( 5);
-        percolation.open(n,n);
-        percolation.isOpen(n,n);
+        Percolation percolation = new Percolation(5);
+        percolation.open(n, n);
+        percolation.isOpen(n, n);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
     void isOpen_diagonal(int n) {
-        Percolation percolation = new Percolation( n);
+        Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             percolation.open(i, i);
         }
@@ -37,7 +37,7 @@ class PercolationTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
     void isOpen_no_open_sites(int n) {
-        Percolation percolation = new Percolation( n);
+        Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 assert !percolation.isOpen(i, j);
@@ -48,7 +48,7 @@ class PercolationTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
     void isOpen_all_sites_are_open(int n) {
-        Percolation percolation = new Percolation( n);
+        Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
                 percolation.open(i, j);
@@ -65,29 +65,29 @@ class PercolationTest {
     @Test
     void isFull_single_item_is_full() {
         Percolation percolation = new Percolation(5);
-        percolation.open(1,2);
-        percolation.open(2,2);
-        percolation.open(3,2);
-        percolation.open(3,3);
-        percolation.open(3,4);
-        percolation.open(2,4);
+        percolation.open(1, 2);
+        percolation.open(2, 2);
+        percolation.open(3, 2);
+        percolation.open(3, 3);
+        percolation.open(3, 4);
+        percolation.open(2, 4);
         percolation.open(1, 4);
-        assert !percolation.isFull(1,1);
-        assert percolation.isFull(1,2);
-        assert percolation.isFull(3,3);
+        assert !percolation.isFull(1, 1);
+        assert percolation.isFull(1, 2);
+        assert percolation.isFull(3, 3);
     }
 
     @Test
     void isFull_simple_is_full() {
         Percolation percolation = new Percolation(3);
         percolation.open(1, 1);
-        assert percolation.isFull(1,1);
+        assert percolation.isFull(1, 1);
     }
 
     @Test
     void isFull_single_item_is_not_full() {
         Percolation percolation = new Percolation(1);
-        assert !percolation.isFull(1,1);
+        assert !percolation.isFull(1, 1);
     }
 
     @Test
@@ -148,7 +148,7 @@ class PercolationTest {
     @Test
     void percolates_diagonal_does_not_percolates() {
         int n = 5;
-        Percolation percolation = new Percolation( n);
+        Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             percolation.open(1, 1);
             percolation.open(n, n);
