@@ -73,3 +73,9 @@ fabric.properties
 #libs
 lib
 
+# archives
+**/*.zip
+
+# MAven
+target/
+

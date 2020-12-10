@@ -1,3 +1,5 @@
+package com.pavelhudau.percolation;
+
 import java.util.HashMap;
 import java.util.Map;
 
