@@ -1,6 +1,5 @@
-package test.java;
+package com.pavelhudau.percolation;
 
-import main.java.PercolationStats;
 import org.junit.jupiter.api.Test;
 
 public class PercolationStatsTest {
