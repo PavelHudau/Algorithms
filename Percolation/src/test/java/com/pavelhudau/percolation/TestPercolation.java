@@ -4,10 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class PercolationTest {
-
+public class TestPercolation {
     @Test
-    void open_simple() {
+    void testOpenSimple() {
         Percolation percolation = new Percolation(5);
         percolation.open(2, 3);
         percolation.isOpen(2, 3);
@@ -15,7 +14,7 @@ class PercolationTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5})
-    void open_edge_cases(int n) {
+    void testOpenEdgeCases(int n) {
         Percolation percolation = new Percolation(5);
         percolation.open(n, n);
         percolation.isOpen(n, n);
@@ -23,7 +22,7 @@ class PercolationTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
-    void isOpen_diagonal(int n) {
+    void testIsOpenDiagonal(int n) {
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             percolation.open(i, i);
@@ -38,7 +37,7 @@ class PercolationTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
-    void isOpen_no_open_sites(int n) {
+    void testIsOpenNoOpenSites(int n) {
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
@@ -49,7 +48,7 @@ class PercolationTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 5, 100})
-    void isOpen_all_sites_are_open(int n) {
+    void testIsOpenAllSitesAreOpen(int n) {
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
@@ -65,7 +64,7 @@ class PercolationTest {
     }
 
     @Test
-    void isFull_single_item_is_full() {
+    void testIsFullWithSingleItemWhenIsFull() {
         Percolation percolation = new Percolation(5);
         percolation.open(1, 2);
         percolation.open(2, 2);
@@ -80,20 +79,20 @@ class PercolationTest {
     }
 
     @Test
-    void isFull_simple_is_full() {
+    void testIsFullSimpleWhenIsFull() {
         Percolation percolation = new Percolation(3);
         percolation.open(1, 1);
         assert percolation.isFull(1, 1);
     }
 
     @Test
-    void isFull_single_item_is_not_full() {
+    void testisFullWithSingleItemWhenIsNotFull() {
         Percolation percolation = new Percolation(1);
         assert !percolation.isFull(1, 1);
     }
 
     @Test
-    void numberOfOpenSites_simple() {
+    void testNumberOfOpenSitesSimple() {
         Percolation percolation = new Percolation(3);
         percolation.open(2, 2);
         percolation.open(1, 2);
@@ -102,7 +101,7 @@ class PercolationTest {
     }
 
     @Test
-    void numberOfOpenSites_diagonal_with_repeats() {
+    void testNumberOfOpenSitesWhenDiagonalWithRepeats() {
         int n = 3;
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
@@ -113,7 +112,7 @@ class PercolationTest {
     }
 
     @Test
-    void percolates_simple_percolates() {
+    void testPercolatesSimpleWhenPercolates() {
         Percolation percolation = new Percolation(3);
         percolation.open(2, 2);
         percolation.open(1, 2);
@@ -122,7 +121,7 @@ class PercolationTest {
     }
 
     @Test
-    void percolates_diagonal_percolates() {
+    void testPercolatesWithDiagonalWhenPercolates() {
         Percolation percolation = new Percolation(5);
         percolation.open(1, 1);
         percolation.open(2, 1);
@@ -138,7 +137,7 @@ class PercolationTest {
     }
 
     @Test
-    void percolates_simple_does_not_percolate() {
+    void testPercolatesSimpleWhenDoesNotPercolate() {
         Percolation percolation = new Percolation(3);
         percolation.open(2, 2);
         percolation.open(1, 1);
@@ -148,7 +147,7 @@ class PercolationTest {
     }
 
     @Test
-    void percolates_diagonal_does_not_percolates() {
+    void testPercolatesDiagonalWhenDoesNotPercolates() {
         int n = 5;
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
@@ -160,14 +159,14 @@ class PercolationTest {
     }
 
     @Test
-    void percolates_1_by_1_percolates() {
+    void testPercolatesWith1by1WhenPercolates() {
         Percolation percolation = new Percolation(1);
         percolation.open(1, 1);
         assert percolation.percolates();
     }
 
     @Test
-    void percolates_1_by_1_does_not_percolate() {
+    void testPercolatesWith1by1WhenDoesNotPercolate() {
         Percolation percolation = new Percolation(1);
         assert !percolation.percolates();
     }

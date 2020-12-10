@@ -2,9 +2,9 @@ package com.pavelhudau.percolation;
 
 import org.junit.jupiter.api.Test;
 
-public class PercolationStatsTest {
+public class TestPercolationStats {
     @Test
-    void open_small() {
+    void testOpenSmall() {
         PercolationStats percolationStats = new PercolationStats(5, 10);
         assert percolationStats.mean() > 0;
         assert percolationStats.stddev() > 0;
@@ -14,7 +14,7 @@ public class PercolationStatsTest {
     }
 
     @Test
-    void open_large() {
+    void testOpenLarge() {
         PercolationStats percolationStats = new PercolationStats(40, 1000);
         assert percolationStats.mean() > 0;
         assert percolationStats.stddev() > 0;
