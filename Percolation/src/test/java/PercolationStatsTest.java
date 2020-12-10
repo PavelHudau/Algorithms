@@ -1,3 +1,6 @@
+package test.java;
+
+import main.java.PercolationStats;
 import org.junit.jupiter.api.Test;
 
 public class PercolationStatsTest {
