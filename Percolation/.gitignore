@@ -76,3 +76,6 @@ lib
 # archives
 **/*.zip
 
+# MAven
+target/
+
