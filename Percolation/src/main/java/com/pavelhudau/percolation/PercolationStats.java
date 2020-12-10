@@ -1,12 +1,20 @@
 package com.pavelhudau.percolation;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
 public class PercolationStats {
+    class RowCol {
+        int row;
+        int col;
+
+        RowCol(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
     private Random random = new Random();
     private ArrayList<Double> percolationThresholds;
     private double percolationThresholdsMean = 0;
@@ -28,10 +36,10 @@ public class PercolationStats {
         double totalNumberOfSlots = Math.pow(n, 2);
         double percolationThresholdsSum = 0;
 
-        ArrayList<Pair<Integer, Integer>> rowsCols = new ArrayList<>(n * n);
+        ArrayList<RowCol> rowsCols = new ArrayList<>(n * n);
         for (int row = 1; row <= n; row++) {
             for (int col = 1; col <= n; col++) {
-                rowsCols.add(new Pair(row, col));
+                rowsCols.add(new RowCol(row, col));
             }
         }
 
@@ -39,8 +47,8 @@ public class PercolationStats {
             Collections.shuffle(rowsCols, this.random);
             Percolation percolation = new Percolation(n);
             boolean percolates = false;
-            for (Pair<Integer, Integer> rowCol : rowsCols) {
-                percolation.open(rowCol.getKey(), rowCol.getValue());
+            for (RowCol rowCol : rowsCols) {
+                percolation.open(rowCol.row, rowCol.col);
                 percolates = percolation.percolates();
                 if (percolates) {
                     break;
