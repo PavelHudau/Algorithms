@@ -103,6 +103,7 @@ public class PercolationStats {
         System.out.println("95% confidence interval = [" +
                 percolationStats.confidenceLo() +
                 ", " +
-                percolationStats.confidenceHi());
+                percolationStats.confidenceHi() +
+                "]");
     }
 }
