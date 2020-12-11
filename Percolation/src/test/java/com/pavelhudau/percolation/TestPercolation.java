@@ -64,7 +64,7 @@ public class TestPercolation {
     }
 
     @Test
-    void testIsFullWithSingleItemWhenIsFull() {
+    void testIsFullWithHorseShoe() {
         Percolation percolation = new Percolation(5);
         percolation.open(1, 2);
         percolation.open(2, 2);
@@ -73,11 +73,46 @@ public class TestPercolation {
         percolation.open(3, 4);
         percolation.open(2, 4);
         percolation.open(1, 4);
-        assert !percolation.isFull(1, 1);
+        percolation.open(5, 4);
         assert percolation.isFull(1, 2);
         assert percolation.isFull(3, 3);
+        assert !percolation.isFull(1, 1);
+        assert !percolation.isFull(5, 4);
     }
 
+    @Test
+    void testIsFullWithSnake() {
+        Percolation percolation = new Percolation(5);
+        percolation.open(1, 1);
+        percolation.open(1, 2);
+        percolation.open(2, 2);
+        percolation.open(2, 3);
+        percolation.open(3, 3);
+        percolation.open(3, 4);
+        percolation.open(4, 4);
+        percolation.open(4, 5);
+        percolation.open(5, 2);
+        assert percolation.isFull(4, 4);
+        assert percolation.isFull(2, 3);
+        assert percolation.isFull(1, 2);
+        assert percolation.isFull(1, 1);
+        assert !percolation.isFull(1, 3);
+        assert !percolation.isFull(5, 2);
+        assert !percolation.isFull(5, 4);
+        assert !percolation.isFull(4, 3);
+    }
+
+    @Test
+    void testIsFullTwoLinesBottomToTop() {
+        Percolation percolation = new Percolation(5);
+        for (int row = 5; row > 0 ; row--) {
+            percolation.open(row, 2);
+            percolation.open(row, 4);
+        }
+
+        assert percolation.isFull(5, 2);
+        assert !percolation.isFull(5, 3);
+    }
     @Test
     void testIsFullSimpleWhenIsFull() {
         Percolation percolation = new Percolation(3);

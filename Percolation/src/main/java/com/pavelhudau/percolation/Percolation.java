@@ -5,7 +5,7 @@ public class Percolation {
     private static final int NOT_A_ROOT = 0;
     private final int n;
     private final int[] rootToTreeSize;
-    private int[] ids;
+    private final int[] ids;
     private int openSitesCnt = 0;
 
 
@@ -54,9 +54,24 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        int i = this.rowColToIdx(row, col);
         // Is open and connected to the top row
-        return this.isOpenIdx(i) && this.root(i) == 0;
+        int i = this.rowColToIdx(row, col);
+        if (!this.isOpenIdx(i)) {
+            return false;
+        }
+
+        int rooti = this.root(i);
+        for (int topCol = 1; topCol <= this.n ; topCol++) {
+            int topColI = this.rowColToIdx(1, topCol);
+            if (!this.isOpenIdx(topColI)) {
+                continue;
+            }
+            if (this.root(topColI) == rooti) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // returns the number of open sites
