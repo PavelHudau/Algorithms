@@ -1,14 +1,13 @@
 package com.pavelhudau.percolation;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Percolation {
-    private static final int blocked_value = -1;
+    private static final int BLOCKED_VALUE = -1;
+    private static final int NOT_A_ROOT = 0;
+    private final int n;
+    private final int[] rootToTreeSize;
     private int[] ids;
-    private int n;
     private int openSitesCnt = 0;
-    private Map<Integer, Integer> rootToTreeSize = new HashMap<>();
+
 
     // creates n-by-n grid, with all sites initially blocked
     public Percolation(int n) {
@@ -17,10 +16,14 @@ public class Percolation {
         }
         this.n = n;
         this.ids = new int[n * n + 2];
+        this.rootToTreeSize = new int[this.ids.length];
         this.ids[0] = 0;
         this.ids[this.ids.length - 1] = this.ids.length - 1;
+        this.rootToTreeSize[0] = 1;
+        this.rootToTreeSize[this.rootToTreeSize.length - 1] = 1;
         for (int i = 1; i < this.ids.length - 1; i++) {
-            this.ids[i] = blocked_value;
+            this.ids[i] = BLOCKED_VALUE;
+            this.rootToTreeSize[i] = 1;
         }
     }
 
@@ -87,20 +90,21 @@ public class Percolation {
         int sizej = this.size(rootj);
         if (sizei > sizej) {
             this.ids[rootj] = rooti;
-            this.rootToTreeSize.put(rooti, sizei + sizej);
-            this.rootToTreeSize.remove(rootj);
+            this.rootToTreeSize[rooti] = sizei + sizej;
+            this.rootToTreeSize[rootj] = NOT_A_ROOT;
         } else {
             this.ids[rooti] = rootj;
-            this.rootToTreeSize.put(rootj, sizei + sizej);
-            this.rootToTreeSize.remove(rooti);
+            this.rootToTreeSize[rootj] = sizei + sizej;
+            this.rootToTreeSize[rooti] = NOT_A_ROOT;
         }
     }
 
     private int size(int root) {
-        if (this.rootToTreeSize.containsKey(root)) {
-            return this.rootToTreeSize.get(root);
+        if (this.rootToTreeSize[root] != NOT_A_ROOT) {
+            return this.rootToTreeSize[root];
         }
-        return 1;
+
+        throw new IllegalStateException(root + " is not a root index.");
     }
 
     private int root(int i) {
@@ -118,7 +122,7 @@ public class Percolation {
     }
 
     private boolean isOpenIdx(int i) {
-        return this.ids[i] != blocked_value;
+        return this.ids[i] != BLOCKED_VALUE;
     }
 
     private void unionLeft(int row, int col, int iToUnionWith) {

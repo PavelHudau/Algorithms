@@ -1,25 +1,22 @@
 package com.pavelhudau.percolation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class PercolationStats {
-    class RowCol {
+    private static class RowCol {
         int row;
         int col;
 
-        RowCol(int row, int col) {
+        private RowCol(int row, int col) {
             this.row = row;
             this.col = col;
         }
     }
 
-    private Random random = new Random();
-    private ArrayList<Double> percolationThresholds;
-    private double percolationThresholdsMean = 0;
-    private double percolationThresholdsStd = 0;
-    private int trials = 0;
+    private final double[] percolationThresholds;
+    private final double percolationThresholdsMean;
+    private final double percolationThresholdsStd;
+    private final int trials;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
@@ -31,20 +28,19 @@ public class PercolationStats {
             throw new IllegalArgumentException("trials must be > 0");
         }
 
-        this.percolationThresholds = new ArrayList<>(n);
+        this.percolationThresholds = new double[trials];
         this.trials = trials;
         double totalNumberOfSlots = Math.pow(n, 2);
         double percolationThresholdsSum = 0;
-
-        ArrayList<RowCol> rowsCols = new ArrayList<>(n * n);
+        RowCol[] rowsCols = new RowCol[n * n];
         for (int row = 1; row <= n; row++) {
             for (int col = 1; col <= n; col++) {
-                rowsCols.add(new RowCol(row, col));
+                rowsCols[(row - 1) * n + col - 1] = new RowCol(row, col);
             }
         }
 
         while (trials > 0) {
-            Collections.shuffle(rowsCols, this.random);
+            this.shuffleRowCols(rowsCols);
             Percolation percolation = new Percolation(n);
             boolean percolates = false;
             for (RowCol rowCol : rowsCols) {
@@ -60,7 +56,7 @@ public class PercolationStats {
             }
 
             double percolationThreshold = percolation.numberOfOpenSites() / totalNumberOfSlots;
-            this.percolationThresholds.add(percolationThreshold);
+            this.percolationThresholds[trials - 1] = percolationThreshold;
             percolationThresholdsSum += percolationThreshold;
             trials--;
         }
@@ -97,10 +93,19 @@ public class PercolationStats {
         return Math.sqrt(sum / (this.trials - 1));
     }
 
+    private void shuffleRowCols(RowCol[] rowCols) {
+        for (int i = 0; i < rowCols.length; i++) {
+            int randPosition = StdRandom.uniform(rowCols.length);
+            RowCol ith = rowCols[i];
+            rowCols[i] = rowCols[randPosition];
+            rowCols[randPosition] = ith;
+        }
+    }
+
     // test client (see below)
     public static void main(String[] args) {
-        Integer n = Integer.parseInt(args[0]);
-        Integer trials = Integer.parseInt(args[1]);
+        int n = Integer.parseInt(args[0]);
+        int trials = Integer.parseInt(args[1]);
         PercolationStats percolationStats = new PercolationStats(n, trials);
         System.out.println("mean =                    " + percolationStats.mean());
         System.out.println("stddev =                  " + percolationStats.stddev());

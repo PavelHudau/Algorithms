@@ -17,6 +17,13 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>edu.princeton.cs.algs4</groupId>
+            <artifactId>algs4</artifactId>
+            <version>3.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/src/main/resources/algs4.jar</systemPath>
+        </dependency>
         <!-- junit 5, unit test -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -31,7 +38,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
         <finalName>maven-unit-test</finalName>
         <plugins>
