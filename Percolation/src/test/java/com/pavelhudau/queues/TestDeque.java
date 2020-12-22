@@ -2,6 +2,10 @@ package com.pavelhudau.queues;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.NoSuchElementException;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public class TestDeque {
     @Test
     void testIsEmptyWhenDequeIsEmpty() {
@@ -93,5 +97,61 @@ public class TestDeque {
         assert deque.removeFirst() == 3;
         assert deque.removeFirst() == 4;
         assert deque.removeFirst() == 5;
+    }
+
+    @Test
+    void testAddFirstWhenItemIsNullThenExceptionIsThrown() {
+        Deque<Integer> deque = new Deque<>();
+        assertThrows(IllegalArgumentException.class, () -> {
+            deque.addFirst(null);
+        });
+    }
+
+    @Test
+    void testAddLastWhenItemIsNullThenExceptionIsThrown() {
+        Deque<Integer> deque = new Deque<>();
+        assertThrows(IllegalArgumentException.class, () -> {
+            deque.addLast(null);
+        });
+    }
+
+    @Test
+    void testRemoveFirstWhenDequeIsEmptyThenExceptionIsThrown() {
+        Deque<Integer> deque = new Deque<>();
+        assertThrows(NoSuchElementException.class, () -> {
+            deque.removeFirst();
+        });
+    }
+
+    @Test
+    void testRemoveLastWhenDequeIsEmptyThenExceptionIsThrown() {
+        Deque<Integer> deque = new Deque<>();
+        assertThrows(NoSuchElementException.class, () -> {
+            deque.removeLast();
+        });
+    }
+
+    @Test
+    void testIteratorWithForLoop() {
+        Deque<Integer> deque = new Deque<>();
+        int expectedItem = 1;
+        for (Integer item : deque) {
+            assert item == expectedItem;
+            expectedItem++;
+        }
+    }
+
+    @Test
+    void testIteratorWhenEmptyThenHasNextReturnsFalse() {
+        Deque<Integer> deque = new Deque<>();
+        assert !deque.iterator().hasNext();
+    }
+
+    @Test
+    void testIteratorWhenEmptyThenNextThrowsException() {
+        Deque<Integer> deque = new Deque<>();
+        assertThrows(NoSuchElementException.class, () -> {
+            deque.iterator().next();
+        });
     }
 }

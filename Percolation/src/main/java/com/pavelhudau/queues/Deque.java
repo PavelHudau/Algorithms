@@ -32,7 +32,7 @@ public class Deque<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("item can not be null");
         }
 
-        AnItem<Item> anItem =  new AnItem<Item>(item, this.front, null);
+        AnItem<Item> anItem = new AnItem<>(item, this.front, null);
         if (this.front != null) {
             this.front.previous = anItem;
         }
@@ -51,7 +51,7 @@ public class Deque<Item> implements Iterable<Item> {
             throw new IllegalArgumentException("item can not be null");
         }
 
-        AnItem<Item> anItem =  new AnItem<Item>(item, null, this.back);
+        AnItem<Item> anItem = new AnItem<>(item, null, this.back);
         if (this.back != null) {
             this.back.next = anItem;
         }
@@ -116,8 +116,8 @@ public class Deque<Item> implements Iterable<Item> {
 
     }
 
-    private class AnItem<Item> {
-        private Item item;
+    private static class AnItem<Item> {
+        private final Item item;
         private AnItem<Item> next;
         private AnItem<Item> previous;
 
@@ -128,8 +128,8 @@ public class Deque<Item> implements Iterable<Item> {
         }
     }
 
-    private class DequeIterator<Item> implements Iterator<Item> {
-        private Deque<Item>.AnItem<Item> current;
+    private static class DequeIterator<Item> implements Iterator<Item> {
+        private AnItem<Item> current;
 
         private DequeIterator(Deque<Item> deque) {
             this.current = deque.front;
@@ -137,12 +137,16 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public boolean hasNext() {
-            return this.current.next != null;
+            return  this.current != null && this.current.next != null;
         }
 
         @Override
         public Item next() {
-            Deque<Item>.AnItem<Item> oldCurrent = this.current;
+            if (this.current == null || this.current.next == null) {
+                throw new NoSuchElementException("Deque is empty");
+            }
+
+            AnItem<Item> oldCurrent = this.current;
             this.current = this.current.next;
             return oldCurrent.item;
         }
