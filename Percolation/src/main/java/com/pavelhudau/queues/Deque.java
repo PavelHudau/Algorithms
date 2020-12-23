@@ -48,7 +48,7 @@ public class Deque<Item> implements Iterable<Item> {
     // add the item to the back
     public void addLast(Item item) {
         if (item == null) {
-            throw new IllegalArgumentException("item can not be null");
+            throw new IllegalArgumentException("Item can not be null");
         }
 
         AnItem<Item> anItem = new AnItem<>(item, null, this.back);
@@ -113,7 +113,19 @@ public class Deque<Item> implements Iterable<Item> {
 
     // unit testing (required)
     public static void main(String[] args) {
-
+        Deque<Integer> deque = new Deque<>();
+        assert deque.size() == 0;
+        assert deque.isEmpty();
+        deque.addFirst(2);
+        assert !deque.isEmpty();
+        deque.addFirst(1);
+        deque.addLast(3);
+        assert  deque.size() == 3;
+        assert deque.removeFirst() == 1;
+        assert deque.removeLast() == 3;
+        assert deque.removeFirst() == 2;
+        assert  deque.size() == 0;
+        assert deque.isEmpty();
     }
 
     private static class AnItem<Item> {
@@ -137,12 +149,12 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public boolean hasNext() {
-            return  this.current != null && this.current.next != null;
+            return  this.current != null;
         }
 
         @Override
         public Item next() {
-            if (this.current == null || this.current.next == null) {
+            if (this.current == null) {
                 throw new NoSuchElementException("Deque is empty");
             }
 

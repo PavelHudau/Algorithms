@@ -134,11 +134,18 @@ public class TestDeque {
     @Test
     void testIteratorWithForLoop() {
         Deque<Integer> deque = new Deque<>();
-        int expectedItem = 1;
-        for (Integer item : deque) {
-            assert item == expectedItem;
-            expectedItem++;
+        int size = 11;
+        for (int i = 0; i < size; i++) {
+            deque.addLast(i);
         }
+
+        int iterations = 0;
+        for (Integer item : deque) {
+            assert item == iterations;
+            iterations++;
+        }
+
+        assert iterations == size;
     }
 
     @Test
