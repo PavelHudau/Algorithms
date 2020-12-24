@@ -20,7 +20,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Percolation - Build with Maven
-      run: cd Percolation && mvn -B package --file pom.xml
-    - name: Percolation - Test with Maven
-      run: cd Percolation && mvn test
+    - name: Algorithms - Build with Maven
+      run: mvn -B package --file pom.xml
+    - name: Algorithms - Test with Maven
+      run: mvn test
