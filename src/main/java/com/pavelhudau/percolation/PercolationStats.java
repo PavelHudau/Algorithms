@@ -86,7 +86,7 @@ public class PercolationStats {
 
     private void shuffleRowCols(RowCol[] rowCols) {
         for (int i = 0; i < rowCols.length; i++) {
-            int randPosition = StdRandom.uniform(rowCols.length);
+            int randPosition = i > 0 ? StdRandom.uniform(i) : 0;
             RowCol ith = rowCols[i];
             rowCols[i] = rowCols[randPosition];
             rowCols[randPosition] = ith;
