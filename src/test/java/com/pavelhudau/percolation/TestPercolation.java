@@ -105,7 +105,7 @@ public class TestPercolation {
     @Test
     void testIsFullTwoLinesBottomToTop() {
         Percolation percolation = new Percolation(5);
-        for (int row = 5; row > 0 ; row--) {
+        for (int row = 5; row > 0; row--) {
             percolation.open(row, 2);
             percolation.open(row, 4);
         }
@@ -113,6 +113,7 @@ public class TestPercolation {
         assert percolation.isFull(5, 2);
         assert !percolation.isFull(5, 3);
     }
+
     @Test
     void testIsFullSimpleWhenIsFull() {
         Percolation percolation = new Percolation(3);
