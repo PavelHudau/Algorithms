@@ -4,7 +4,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Comparator;
 import java.util.stream.Stream;
@@ -63,7 +65,20 @@ public class TestPoint {
     })
     void testSlopeOrder(int thisX, int thisY, int thatX, int thatY, int expected) {
         Point zeroPoint = new Point(0, 0);
-        Comparator<Point> comparator =  zeroPoint.slopeOrder();
+        Comparator<Point> comparator = zeroPoint.slopeOrder();
         assertEquals(expected, comparator.compare(new Point(thisX, thisY), new Point(thatX, thatY)));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-1, 1",
+            "1, -1",
+            "-1, -1",
+            "32768, 1",
+            "1, 32768",
+            "32768, 32768",
+    })
+    void testWhenInvalidXOrYThenExceptionIsThrown(int x, int y) {
+        assertThrows(IllegalArgumentException.class, () -> new Point(x, y));
     }
 }
