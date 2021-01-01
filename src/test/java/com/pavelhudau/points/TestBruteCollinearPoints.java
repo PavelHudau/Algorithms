@@ -2,7 +2,7 @@ package com.pavelhudau.points;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBruteCollinearPoints {
     @Test
@@ -17,7 +17,7 @@ public class TestBruteCollinearPoints {
                 new Point(5, 10)
         };
         BruteCollinearPoints alg = new BruteCollinearPoints(points);
-        assert alg.numberOfSegments() == 1;
+        assertEquals(1, alg.numberOfSegments());
     }
 
     @Test
@@ -32,7 +32,7 @@ public class TestBruteCollinearPoints {
                 new Point(5, 10)
         };
         BruteCollinearPoints alg = new BruteCollinearPoints(points);
-        assert alg.numberOfSegments() == 2;
+        assertEquals(2, alg.numberOfSegments());
     }
 
     @Test
@@ -45,8 +45,8 @@ public class TestBruteCollinearPoints {
                 new Point(5, 5)
         };
         BruteCollinearPoints alg = new BruteCollinearPoints(points);
-        assert alg.segments().length == 0;
-        assert alg.numberOfSegments() == 0;
+        assertEquals(0, alg.segments().length);
+        assertEquals(0, alg.numberOfSegments());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class TestBruteCollinearPoints {
     @Test
     void testWhenZeroPointsReturnsNoSegments() {
         BruteCollinearPoints alg = new BruteCollinearPoints(new Point[0]);
-        assert alg.segments().length == 0;
-        assert alg.numberOfSegments() == 0;
+        assertEquals(0, alg.segments().length);
+        assertEquals(0, alg.numberOfSegments());
     }
 }
