@@ -16,6 +16,12 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException("points can not be null");
         }
 
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null) {
+                throw new IllegalArgumentException("No point can not be null");
+            }
+        }
+
         this.numberOfSegments = 0;
         this.segments = new LineSegment[0];
 

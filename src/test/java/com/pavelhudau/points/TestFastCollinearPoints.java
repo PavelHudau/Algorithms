@@ -92,6 +92,19 @@ public class TestFastCollinearPoints {
         });
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5})
+    void testWhenSmallArrayAndOneOfThePointsIsNullThenThrowsException(int size) {
+        Point[] points = new Point[size];
+        for (int i = 0; i < size; i++) {
+            points[i] = new Point(1, i);
+        }
+        points[0] = null;
+        assertThrows(IllegalArgumentException.class, () -> {
+            new FastCollinearPoints(points);
+        });
+    }
+
     @Test
     void testWhenZeroPointsReturnsNoSegments() {
         FastCollinearPoints alg = new FastCollinearPoints(new Point[0]);
