@@ -56,7 +56,7 @@ public class FastCollinearPoints {
                 }
 
                 if (!hasSeenSegment && frontRunnerIdx - backRunnerIdx >= 3) {
-                    addSegment(new LineSegment(basisPoint, points[frontRunnerIdx - 1]));
+                    addSegment(createSegment(points, basisPoint, backRunnerIdx, frontRunnerIdx));
                 }
 
                 backRunnerIdx = frontRunnerIdx;
@@ -101,6 +101,16 @@ public class FastCollinearPoints {
         // If point on a segment is less than the basis point, then the segment was already
         // counted and current basis is just a point on the segment.
         return pointOnASegment.compareTo(basisPoint) < 0;
+    }
+
+    private static LineSegment createSegment(Point[] points, Point basisPoint, int backRunnerIdx, int frontRunnerIdx) {
+        Point max = basisPoint;
+        for (int i = backRunnerIdx; i < frontRunnerIdx; i++) {
+            if (max.compareTo(points[i]) < 0) {
+                max = points[i];
+            }
+        }
+        return new LineSegment(basisPoint, max);
     }
 
     private void addSegment(LineSegment segment) {

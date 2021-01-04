@@ -34,7 +34,9 @@ public class BruteCollinearPoints {
                         double slope14 = calculateSlope(points[i1], points[i4]);
                         if (slope12 == slope14) {
                             // Segment found
-                            this.addSegment(new LineSegment(points[i1], points[i4]));
+                            this.addSegment(createSegment(new Point[]{
+                                    points[i1], points[i2], points[i3], points[i4]
+                            }));
                             break;
                         }
                     }
@@ -69,6 +71,20 @@ public class BruteCollinearPoints {
             throw new IllegalArgumentException("Duplicate points " + p1.toString());
         }
         return p1.slopeTo(p2);
+    }
+
+    private static LineSegment createSegment(Point[] points) {
+        Point min = points[0];
+        Point max = points[0];
+        for (int i = 1; i < points.length; i++) {
+            if (min.compareTo(points[i]) > 0) {
+                min = points[i];
+            }
+            if (max.compareTo(points[i]) < 0) {
+                max = points[i];
+            }
+        }
+        return new LineSegment(min, max);
     }
 
     private void addSegment(LineSegment segment) {
