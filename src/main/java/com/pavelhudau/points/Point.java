@@ -5,7 +5,6 @@ import edu.princeton.cs.algs4.StdDraw;
 import java.util.Comparator;
 
 public class Point implements Comparable<Point> {
-    private static final int MAX_COORDINATE = 32767;
     private final int x;
     private final int y;
 
@@ -16,10 +15,10 @@ public class Point implements Comparable<Point> {
      * @param y the <em>y</em>-coordinate of the point
      */
     public Point(int x, int y) {
-        if (x < 0 || x > MAX_COORDINATE) {
+        if (x < 0) {
             throw new IllegalArgumentException("x must be between 0 and 32767");
         }
-        if (y < 0 || y > MAX_COORDINATE) {
+        if (y < 0) {
             throw new IllegalArgumentException("y must be between 0 and 32767");
         }
         this.x = x;

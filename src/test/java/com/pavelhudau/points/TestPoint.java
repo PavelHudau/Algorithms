@@ -1,6 +1,5 @@
 package com.pavelhudau.points;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -73,10 +72,7 @@ public class TestPoint {
     @CsvSource({
             "-1, 1",
             "1, -1",
-            "-1, -1",
-            "32768, 1",
-            "1, 32768",
-            "32768, 32768",
+            "-1, -1"
     })
     void testWhenInvalidXOrYThenExceptionIsThrown(int x, int y) {
         assertThrows(IllegalArgumentException.class, () -> new Point(x, y));
