@@ -81,7 +81,9 @@ public class FastCollinearPoints {
      * @return List of segments
      */
     public LineSegment[] segments() {
-        return this.segments;
+        LineSegment[] segmentsCopy = new LineSegment[this.segments.length];
+        System.arraycopy(this.segments, 0, segmentsCopy, 0, this.segments.length);
+        return segmentsCopy;
     }
 
     private static double calculateSlope(Point p1, Point p2) {

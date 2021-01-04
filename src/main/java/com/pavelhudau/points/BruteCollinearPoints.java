@@ -1,6 +1,5 @@
 package com.pavelhudau.points;
 
-
 public class BruteCollinearPoints {
     private static final int EXPAND_RATIO = 2;
 
@@ -57,7 +56,9 @@ public class BruteCollinearPoints {
      * The line segments.
      **/
     public LineSegment[] segments() {
-        return this.segments;
+        LineSegment[] segmentsCopy = new LineSegment[this.segments.length];
+        System.arraycopy(this.segments, 0, segmentsCopy, 0, this.segments.length);
+        return segmentsCopy;
     }
 
     private static double calculateSlope(Point p1, Point p2) {
