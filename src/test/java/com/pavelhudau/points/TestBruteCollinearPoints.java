@@ -1,6 +1,8 @@
 package com.pavelhudau.points;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,9 +80,23 @@ public class TestBruteCollinearPoints {
         assertThrows(IllegalArgumentException.class, () -> new BruteCollinearPoints(points));
     }
 
-    @Test
-    void testWhenPointIsNullThenThrowsException() {
-        assertThrows(IllegalArgumentException.class, () -> new BruteCollinearPoints(null));
+    @ParameterizedTest
+    @ValueSource(ints = {0, 3, 7})
+    void testOneOfThePointsIsNullThenThrowsException(int nullIdx) {
+        Point[] points = new Point[]{
+                new Point(5, 6),
+                new Point(6, 6),
+                new Point(7, 6),
+                new Point(1, 4),
+                new Point(5, 5),
+                new Point(8, 6),
+                new Point(5, 10),
+                new Point(5, 6)
+        };
+        points[nullIdx] = null;
+        assertThrows(IllegalArgumentException.class, () -> {
+            new BruteCollinearPoints(points);
+        });
     }
 
     @Test
