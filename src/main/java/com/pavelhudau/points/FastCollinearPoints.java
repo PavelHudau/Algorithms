@@ -1,12 +1,11 @@
 package com.pavelhudau.points;
 
 import java.util.Comparator;
+import java.util.LinkedList;
 
 public class FastCollinearPoints {
-    private static final int EXPAND_RATIO = 2;
-
     private int numberOfSegments;
-    private LineSegment[] segments;
+    private final LinkedList<LineSegment> segments;
 
     /**
      * Finds all line segments containing 4 or more points
@@ -30,7 +29,7 @@ public class FastCollinearPoints {
         sortPointsByPosition(pointsByPosition);
 
         this.numberOfSegments = 0;
-        this.segments = new LineSegment[0];
+        this.segments = new LinkedList<>();
 
 
         for (Point basisPoint : pointsByPosition) {
@@ -62,8 +61,6 @@ public class FastCollinearPoints {
                 backRunnerIdx = frontRunnerIdx;
             }
         }
-
-        this.shrinkSegmentsToRealSize();
     }
 
     /**
@@ -81,8 +78,12 @@ public class FastCollinearPoints {
      * @return List of segments
      */
     public LineSegment[] segments() {
-        LineSegment[] segmentsCopy = new LineSegment[this.segments.length];
-        System.arraycopy(this.segments, 0, segmentsCopy, 0, this.segments.length);
+        LineSegment[] segmentsCopy = new LineSegment[this.numberOfSegments];
+        int i = 0;
+        for (LineSegment segment : this.segments) {
+            segmentsCopy[i] = segment;
+            i++;
+        }
         return segmentsCopy;
     }
 
@@ -114,27 +115,8 @@ public class FastCollinearPoints {
     }
 
     private void addSegment(LineSegment segment) {
-        if (this.segments.length >= this.numberOfSegments) {
-            this.expandSegments();
-        }
-        this.segments[this.numberOfSegments] = segment;
+        this.segments.add(segment);
         this.numberOfSegments++;
-    }
-
-    private void expandSegments() {
-        int newCapacity = this.segments.length > 0
-                ? this.segments.length * EXPAND_RATIO
-                : EXPAND_RATIO;
-        LineSegment[] newItems = new LineSegment[newCapacity];
-        System.arraycopy(this.segments, 0, newItems, 0, this.segments.length);
-        this.segments = newItems;
-    }
-
-    private void shrinkSegmentsToRealSize() {
-        int newCapacity = this.numberOfSegments;
-        LineSegment[] newItems = new LineSegment[newCapacity];
-        System.arraycopy(this.segments, 0, newItems, 0, newCapacity);
-        this.segments = newItems;
     }
 
     private void sortPointsByPosition(Point[] a) {
