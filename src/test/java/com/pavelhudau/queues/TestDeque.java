@@ -4,47 +4,49 @@ import org.junit.jupiter.api.Test;
 
 import java.util.NoSuchElementException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class TestDeque {
     @Test
     void testIsEmptyWhenDequeIsEmpty() {
         Deque<Integer> deque = new Deque<>();
-        assert deque.isEmpty();
+        assertTrue(deque.isEmpty());
 
         deque.addFirst(2);
         deque.removeFirst();
 
-        assert deque.isEmpty();
+        assertTrue(deque.isEmpty());
     }
 
     @Test
     void testIsEmptyWhenDequeIsNotEmpty() {
         Deque<Integer> deque = new Deque<>();
         deque.addFirst(1);
-        assert !deque.isEmpty();
+        assertFalse(deque.isEmpty());
 
         deque.addLast(2);
         deque.removeFirst();
-        assert !deque.isEmpty();
+        assertFalse(deque.isEmpty());
     }
 
     @Test
     void testSize() {
         Deque<Integer> deque = new Deque<>();
-        assert deque.size() == 0;
+        assertEquals(0, deque.size());
 
         deque.addFirst(1);
-        assert deque.size() == 1;
+        assertEquals(1, deque.size());
 
         deque.addLast(2);
-        assert deque.size() == 2;
+        assertEquals(2, deque.size());
 
         deque.removeFirst();
-        assert deque.size() == 1;
+        assertEquals(1, deque.size());
 
         deque.removeLast();
-        assert deque.size() == 0;
+        assertEquals(0, deque.size());
     }
 
     @Test
@@ -53,9 +55,9 @@ public class TestDeque {
         deque.addFirst(3);
         deque.addFirst(2);
         deque.addFirst(1);
-        assert deque.removeFirst() == 1;
-        assert deque.removeFirst() == 2;
-        assert deque.removeFirst() == 3;
+        assertEquals(1, deque.removeFirst());
+        assertEquals(2, deque.removeFirst());
+        assertEquals(3, deque.removeFirst());
     }
 
     @Test
@@ -64,9 +66,9 @@ public class TestDeque {
         deque.addLast(3);
         deque.addLast(2);
         deque.addLast(1);
-        assert deque.removeLast() == 1;
-        assert deque.removeLast() == 2;
-        assert deque.removeLast() == 3;
+        assertEquals(1, deque.removeLast());
+        assertEquals(2, deque.removeLast());
+        assertEquals(3, deque.removeLast());
     }
 
     @Test
@@ -77,11 +79,11 @@ public class TestDeque {
         deque.addLast(5);
         deque.addFirst(2);
         deque.addFirst(1);
-        assert deque.removeLast() == 5;
-        assert deque.removeLast() == 4;
-        assert deque.removeLast() == 3;
-        assert deque.removeLast() == 2;
-        assert deque.removeLast() == 1;
+        assertEquals(5, deque.removeLast());
+        assertEquals(4, deque.removeLast());
+        assertEquals(3, deque.removeLast());
+        assertEquals(2, deque.removeLast());
+        assertEquals(1, deque.removeLast());
     }
 
     @Test
@@ -92,11 +94,11 @@ public class TestDeque {
         deque.addLast(5);
         deque.addFirst(2);
         deque.addFirst(1);
-        assert deque.removeFirst() == 1;
-        assert deque.removeFirst() == 2;
-        assert deque.removeFirst() == 3;
-        assert deque.removeFirst() == 4;
-        assert deque.removeFirst() == 5;
+        assertEquals(1, deque.removeFirst());
+        assertEquals(2, deque.removeFirst());
+        assertEquals(3, deque.removeFirst());
+        assertEquals(4, deque.removeFirst());
+        assertEquals(5, deque.removeFirst());
     }
 
     @Test
@@ -141,17 +143,17 @@ public class TestDeque {
 
         int iterations = 0;
         for (Integer item : deque) {
-            assert item == iterations;
+            assertEquals(iterations, item);
             iterations++;
         }
 
-        assert iterations == size;
+        assertEquals(iterations, size);
     }
 
     @Test
     void testIteratorWhenEmptyThenHasNextReturnsFalse() {
         Deque<Integer> deque = new Deque<>();
-        assert !deque.iterator().hasNext();
+        assertFalse(deque.iterator().hasNext());
     }
 
     @Test

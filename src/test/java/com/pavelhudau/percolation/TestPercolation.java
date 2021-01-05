@@ -4,12 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class TestPercolation {
     @Test
     void testOpenSimple() {
         Percolation percolation = new Percolation(5);
         percolation.open(2, 3);
-        percolation.isOpen(2, 3);
+        assertTrue(percolation.isOpen(2, 3));
     }
 
     @ParameterizedTest
@@ -17,7 +19,7 @@ public class TestPercolation {
     void testOpenEdgeCases(int n) {
         Percolation percolation = new Percolation(5);
         percolation.open(n, n);
-        percolation.isOpen(n, n);
+        assertTrue(percolation.isOpen(n, n));
     }
 
     @ParameterizedTest
@@ -30,7 +32,7 @@ public class TestPercolation {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                assert percolation.isOpen(i, j) == (i == j);
+                assertEquals(i == j, percolation.isOpen(i, j));
             }
         }
     }
@@ -41,7 +43,7 @@ public class TestPercolation {
         Percolation percolation = new Percolation(n);
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                assert !percolation.isOpen(i, j);
+                assertFalse(percolation.isOpen(i, j));
             }
         }
     }
@@ -58,7 +60,7 @@ public class TestPercolation {
 
         for (int i = 1; i <= n; i++) {
             for (int j = 1; j <= n; j++) {
-                assert percolation.isOpen(i, j);
+                assertTrue(percolation.isOpen(i, j));
             }
         }
     }
@@ -74,10 +76,10 @@ public class TestPercolation {
         percolation.open(2, 4);
         percolation.open(1, 4);
         percolation.open(5, 4);
-        assert percolation.isFull(1, 2);
-        assert percolation.isFull(3, 3);
-        assert !percolation.isFull(1, 1);
-        assert !percolation.isFull(5, 4);
+        assertTrue(percolation.isFull(1, 2));
+        assertTrue(percolation.isFull(3, 3));
+        assertFalse(percolation.isFull(1, 1));
+        assertFalse(percolation.isFull(5, 4));
     }
 
     @Test
@@ -92,38 +94,39 @@ public class TestPercolation {
         percolation.open(4, 4);
         percolation.open(4, 5);
         percolation.open(5, 2);
-        assert percolation.isFull(4, 4);
-        assert percolation.isFull(2, 3);
-        assert percolation.isFull(1, 2);
-        assert percolation.isFull(1, 1);
-        assert !percolation.isFull(1, 3);
-        assert !percolation.isFull(5, 2);
-        assert !percolation.isFull(5, 4);
-        assert !percolation.isFull(4, 3);
+        assertTrue(percolation.isFull(4, 4));
+        assertTrue(percolation.isFull(2, 3));
+        assertTrue(percolation.isFull(1, 2));
+        assertTrue(percolation.isFull(1, 1));
+        assertFalse(percolation.isFull(1, 3));
+        assertFalse(percolation.isFull(5, 2));
+        assertFalse(percolation.isFull(5, 4));
+        assertFalse(percolation.isFull(4, 3));
     }
 
     @Test
     void testIsFullTwoLinesBottomToTop() {
         Percolation percolation = new Percolation(5);
-        for (int row = 5; row > 0 ; row--) {
+        for (int row = 5; row > 0; row--) {
             percolation.open(row, 2);
             percolation.open(row, 4);
         }
 
-        assert percolation.isFull(5, 2);
-        assert !percolation.isFull(5, 3);
+        assertTrue(percolation.isFull(5, 2));
+        assertFalse(percolation.isFull(5, 3));
     }
+
     @Test
     void testIsFullSimpleWhenIsFull() {
         Percolation percolation = new Percolation(3);
         percolation.open(1, 1);
-        assert percolation.isFull(1, 1);
+        assertTrue(percolation.isFull(1, 1));
     }
 
     @Test
     void testisFullWithSingleItemWhenIsNotFull() {
         Percolation percolation = new Percolation(1);
-        assert !percolation.isFull(1, 1);
+        assertFalse(percolation.isFull(1, 1));
     }
 
     @Test
@@ -132,7 +135,7 @@ public class TestPercolation {
         percolation.open(2, 2);
         percolation.open(1, 2);
         percolation.open(3, 2);
-        assert percolation.numberOfOpenSites() == 3;
+        assertEquals(3, percolation.numberOfOpenSites());
     }
 
     @Test
@@ -143,7 +146,7 @@ public class TestPercolation {
             percolation.open(2, 1);
             percolation.open(i, i);
         }
-        assert percolation.numberOfOpenSites() == 4;
+        assertEquals(4, percolation.numberOfOpenSites());
     }
 
     @Test
@@ -152,7 +155,7 @@ public class TestPercolation {
         percolation.open(2, 2);
         percolation.open(1, 2);
         percolation.open(3, 2);
-        assert percolation.percolates();
+        assertTrue(percolation.percolates());
     }
 
     @Test
@@ -167,8 +170,8 @@ public class TestPercolation {
         percolation.open(4, 4);
         percolation.open(4, 5);
         percolation.open(5, 5);
-        assert percolation.percolates();
-        assert percolation.numberOfOpenSites() == 9;
+        assertTrue(percolation.percolates());
+        assertEquals(9, percolation.numberOfOpenSites());
     }
 
     @Test
@@ -177,8 +180,8 @@ public class TestPercolation {
         percolation.open(2, 2);
         percolation.open(1, 1);
         percolation.open(3, 3);
-        assert !percolation.percolates();
-        assert percolation.numberOfOpenSites() == 3;
+        assertFalse(percolation.percolates());
+        assertEquals(3, percolation.numberOfOpenSites());
     }
 
     @Test
@@ -190,19 +193,19 @@ public class TestPercolation {
             percolation.open(n, n);
             percolation.open(i, i);
         }
-        assert !percolation.percolates();
+        assertFalse(percolation.percolates());
     }
 
     @Test
     void testPercolatesWith1by1WhenPercolates() {
         Percolation percolation = new Percolation(1);
         percolation.open(1, 1);
-        assert percolation.percolates();
+        assertTrue(percolation.percolates());
     }
 
     @Test
     void testPercolatesWith1by1WhenDoesNotPercolate() {
         Percolation percolation = new Percolation(1);
-        assert !percolation.percolates();
+        assertFalse(percolation.percolates());
     }
 }
