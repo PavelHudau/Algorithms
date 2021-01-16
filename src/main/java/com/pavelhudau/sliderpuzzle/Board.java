@@ -1,21 +1,36 @@
 package com.pavelhudau.sliderpuzzle;
 
 
-public class Board {
+import java.util.Iterator;
 
-    private int [][] tiles;
-    // create a board from an n-by-n array of tiles,
-    // where tiles[row][col] = tile at (row, col)
+import edu.princeton.cs.algs4.StdRandom;
+
+public class Board {
+    private final int[][] tiles;
+
+    /**
+     * Create a board from an n-by-n array of tiles,
+     *
+     * @param tiles tiles[row][col] = tile at (row, col)
+     */
     public Board(int[][] tiles) {
-        this.tiles = tiles;
+        this.tiles = new int[tiles.length][tiles.length];
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[i].length; j++) {
+                this.tiles[i][j] = tiles[i][j];
+            }
+        }
     }
 
-    // string representation of this board
+    /**
+     * Builds string representation of this board.
+     *
+     * @return string representation of this board
+     */
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append(this.tiles.length);
-        for (int i = 0; i < this.tiles.length; i++) {
-            int[] row = this.tiles[i];
+        for (int[] row : this.tiles) {
             builder.append("\n");
             for (int j = 0; j < row.length; j++) {
                 builder.append(row[j]);
@@ -27,20 +42,31 @@ public class Board {
         return builder.toString();
     }
 
-    // board dimension n
-    public int dimension(){
+    /**
+     * Calculates dimention of the Board
+     *
+     * @return dimension
+     */
+    public int dimension() {
         return this.tiles.length;
     }
 
-    // number of tiles out of place
-    public int hamming(){
+    /**
+     * Calculates the Hamming distance between a board and the goal board.
+     * Hamming distance is the number of tiles in the wrong position.
+     *
+     * @return number of tiles out of place
+     */
+    public int hamming() {
         int dimension = this.dimension();
         int outOfPlace = 0;
         for (int i = 0; i < this.tiles.length; i++) {
             int[] row = this.tiles[i];
             int rowShift = i * dimension;
-            int rowLength = i < this.tiles.length - 1 ? row.length : row.length - 1;
-            for (int j = 0; j < rowLength; j++) {
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == 0) {
+                    continue;
+                }
                 int inPlaceTileValue = rowShift + j + 1;
                 if (inPlaceTileValue != row[j]) {
                     outOfPlace++;
@@ -49,34 +75,200 @@ public class Board {
         }
         return outOfPlace;
     }
-//
-//    // sum of Manhattan distances between tiles and goal
-//    public int manhattan(){
-//
-//    }
-//
-//    // is this board the goal board?
-//    public boolean isGoal(){
-//
-//    }
-//
-//    // does this board equal y?
-//    public boolean equals(Object y){
-//
-//    }
-//
-//    // all neighboring boards
-//    public Iterable<Board> neighbors(){
-//
-//    }
-//
-//    // a board that is obtained by exchanging any pair of tiles
-//    public Board twin(){
-//
-//    }
 
-    // unit testing (not graded)
-    public static void main(String[] args){
+    /**
+     * Calculates sum of Manhattan distances between tiles and goal.
+     * The Manhattan distance between a board and the goal board is
+     * the sum of the Manhattan distances (sum of the vertical and horizontal distance)
+     * from the tiles to their goal positions.
+     *
+     * @return Sum of Manhattan distances between tiles and goal
+     */
+    public int manhattan() {
+        int dimension = this.dimension();
+        int manhattanSum = 0;
+        for (int i = 0; i < this.tiles.length; i++) {
+            int[] row = this.tiles[i];
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == 0) {
+                    continue;
+                }
+                int goalI = (row[j] - 1) / dimension;
+                int goalJ = (row[j] - 1) % dimension;
+                manhattanSum += this.distance(i, j, goalI, goalJ);
+            }
+        }
+        return manhattanSum;
+    }
 
+    /**
+     * Calculates whether this board the goal board.
+     *
+     * @return is this board the goal board?
+     */
+    public boolean isGoal() {
+        return this.hamming() == 0;
+    }
+
+    /**
+     * Calculates whether the Board is equal to y.
+     * Two boards are equal if they are have the same size and their corresponding tiles are in the same positions.
+     * The equals() method is inherited from java.lang.Object, so it must obey all of Java’s requirements.
+     *
+     * @param y Other board
+     * @return is the Board equal to y?
+     */
+    public boolean equals(Object y) {
+        if (this == y) {
+            return true;
+        }
+        if (y == null) {
+            return false;
+        }
+        if (this.getClass() != y.getClass()) {
+            return false;
+        }
+
+        Board other = (Board) y;
+        if (this.dimension() != other.dimension()) {
+            return false;
+        }
+
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[i].length; j++) {
+                if (this.tiles[i][j] != other.tiles[i][j]) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Creates an Iterable to walk through all neighboring boards.
+     * Depending on the location of the blank square, a board can have 2, 3, or 4 neighbors.
+     *
+     * @return an Iterable to walk through all neighboring boards.
+     */
+    public Iterable<Board> neighbors() {
+        Board me = this;
+        return new Iterable<Board>() {
+            private int position = 0;
+
+            @Override
+            public Iterator<Board> iterator() {
+                return new NeighborsIterator(me);
+            }
+        };
+    }
+
+    /**
+     * Creates a board that is obtained by exchanging any pair of tiles.
+     *
+     * @return a board that is obtained by exchanging any pair of tiles.
+     */
+    public Board twin() {
+        int ai = StdRandom.uniform(this.dimension());
+        int aj = StdRandom.uniform(this.dimension());
+        int bi = this.getRandomIdxExcept(ai);
+        int bj = this.getRandomIdxExcept(aj);
+        Board twinBoard = new Board(this.tiles);
+        twinBoard.exchangeTiles(ai, aj, bi, bj);
+        return twinBoard;
+    }
+
+    private int getRandomIdxExcept(int idx) {
+        int shift = StdRandom.uniform(1, this.dimension());
+        return (idx + shift) % this.dimension();
+    }
+
+    private int distance(int ai, int aj, int bi, int bj) {
+        return Math.abs(ai - bi) + Math.abs(aj - bj);
+    }
+
+    private int[] findValue(int value) {
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles[i].length; j++) {
+                if (this.tiles[i][j] == 0) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
+    }
+
+    private void exchangeTiles(int ai, int aj, int bi, int bj) {
+        int tmp = this.tiles[ai][aj];
+        this.tiles[ai][aj] = this.tiles[bi][bj];
+        this.tiles[bi][bj] = tmp;
+    }
+
+    public static void main(String[] args) {
+        // Unit tests are used instead.
+    }
+
+    private static class NeighborsIterator implements Iterator<Board> {
+        private Board[] neighbors = new Board[4];
+        int maxBoardIdx = -1;
+        int iteratorIdx = -1;
+
+        NeighborsIterator(Board board) {
+            int[] zeroPosition = board.findValue(0);
+            if (zeroPosition == null) {
+                throw new IllegalStateException("Can't find 0 value");
+            }
+
+            int iZero = zeroPosition[0];
+            int jZero = zeroPosition[1];
+
+            // Top neighbor
+            if (iZero > 0) {
+                Board topNeighbor = new Board(board.tiles);
+                topNeighbor.exchangeTiles(iZero, jZero, iZero - 1, jZero);
+                this.maxBoardIdx++;
+                this.neighbors[this.maxBoardIdx] = topNeighbor;
+            }
+
+            // Bottom neighbor
+            if (iZero + 1 < board.dimension()) {
+                Board bottomNeighbor = new Board(board.tiles);
+                bottomNeighbor.exchangeTiles(iZero, jZero, iZero + 1, jZero);
+                this.maxBoardIdx++;
+                this.neighbors[this.maxBoardIdx] = bottomNeighbor;
+            }
+
+            // Left neighbor
+            if (jZero > 0) {
+                Board leftNeighbor = new Board(board.tiles);
+                leftNeighbor.exchangeTiles(iZero, jZero, iZero, jZero - 1);
+                this.maxBoardIdx++;
+                this.neighbors[this.maxBoardIdx] = leftNeighbor;
+            }
+
+            // Right neighbor
+            if (jZero + 1 < board.dimension()) {
+                Board rightNeighbor = new Board(board.tiles);
+                rightNeighbor.exchangeTiles(iZero, jZero, iZero, jZero + 1);
+                this.maxBoardIdx++;
+                this.neighbors[this.maxBoardIdx] = rightNeighbor;
+            }
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.iteratorIdx < this.maxBoardIdx;
+        }
+
+        @Override
+        public Board next() {
+            this.iteratorIdx++;
+            return this.neighbors[this.iteratorIdx];
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove is not supported");
+        }
     }
 }
