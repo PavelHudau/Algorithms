@@ -7,6 +7,8 @@ import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
     private final int[][] tiles;
+    private int hammingValue;
+    private int manhattanValue;
 
     /**
      * Create a board from an n-by-n array of tiles,
@@ -14,11 +16,16 @@ public class Board {
      * @param tiles tiles[row][col] = tile at (row, col)
      */
     public Board(int[][] tiles) {
+        this(tiles, true);
+    }
+
+    private Board(int[][] tiles, boolean preCalculate) {
         this.tiles = new int[tiles.length][tiles.length];
         for (int i = 0; i < this.tiles.length; i++) {
-            for (int j = 0; j < this.tiles[i].length; j++) {
-                this.tiles[i][j] = tiles[i][j];
-            }
+            System.arraycopy(tiles[i], 0, this.tiles[i], 0, this.tiles[i].length);
+        }
+        if (preCalculate) {
+            preCalculate();
         }
     }
 
@@ -58,22 +65,7 @@ public class Board {
      * @return number of tiles out of place
      */
     public int hamming() {
-        int dimension = this.dimension();
-        int outOfPlace = 0;
-        for (int i = 0; i < this.tiles.length; i++) {
-            int[] row = this.tiles[i];
-            int rowShift = i * dimension;
-            for (int j = 0; j < row.length; j++) {
-                if (row[j] == 0) {
-                    continue;
-                }
-                int inPlaceTileValue = rowShift + j + 1;
-                if (inPlaceTileValue != row[j]) {
-                    outOfPlace++;
-                }
-            }
-        }
-        return outOfPlace;
+        return this.hammingValue;
     }
 
     /**
@@ -85,20 +77,7 @@ public class Board {
      * @return Sum of Manhattan distances between tiles and goal
      */
     public int manhattan() {
-        int dimension = this.dimension();
-        int manhattanSum = 0;
-        for (int i = 0; i < this.tiles.length; i++) {
-            int[] row = this.tiles[i];
-            for (int j = 0; j < row.length; j++) {
-                if (row[j] == 0) {
-                    continue;
-                }
-                int goalI = (row[j] - 1) / dimension;
-                int goalJ = (row[j] - 1) % dimension;
-                manhattanSum += this.distance(i, j, goalI, goalJ);
-            }
-        }
-        return manhattanSum;
+        return this.manhattanValue;
     }
 
     /**
@@ -107,7 +86,7 @@ public class Board {
      * @return is this board the goal board?
      */
     public boolean isGoal() {
-        return this.hamming() == 0;
+        return this.hammingValue == 0;
     }
 
     /**
@@ -154,8 +133,6 @@ public class Board {
     public Iterable<Board> neighbors() {
         Board me = this;
         return new Iterable<Board>() {
-            private int position = 0;
-
             @Override
             public Iterator<Board> iterator() {
                 return new NeighborsIterator(me);
@@ -171,16 +148,49 @@ public class Board {
     public Board twin() {
         int ai = StdRandom.uniform(this.dimension());
         int aj = StdRandom.uniform(this.dimension());
-        int bi = this.getRandomIdxExcept(ai);
-        int bj = this.getRandomIdxExcept(aj);
+        int bi = StdRandom.uniform(this.dimension());
+        int bj = StdRandom.uniform(this.dimension());
+        while (this.tiles[bi][bj] == 0 || bi == ai && bj == aj) {
+            // If got to 0 (blank slot) of to the same tile, then just move to next tile.
+            bj++;
+            if (bj >= this.dimension()) {
+                bj = 0;
+                bi++;
+                if (bi >= this.dimension()) {
+                    bi = 0;
+                }
+            }
+        }
         Board twinBoard = new Board(this.tiles);
         twinBoard.exchangeTiles(ai, aj, bi, bj);
         return twinBoard;
     }
 
-    private int getRandomIdxExcept(int idx) {
-        int shift = StdRandom.uniform(1, this.dimension());
-        return (idx + shift) % this.dimension();
+    private void preCalculate() {
+        this.hammingValue = 0;
+        this.manhattanValue = 0;
+        int dimension = this.tiles.length;
+        for (int i = 0; i < this.tiles.length; i++) {
+            int[] row = this.tiles[i];
+            int rowShift = i * dimension;
+            for (int j = 0; j < this.tiles[i].length; j++) {
+                if (row[j] == 0) {
+                    continue;
+                }
+
+                // hamming
+                int inPlaceTileValue = rowShift + j + 1;
+                if (inPlaceTileValue != row[j]) {
+                    this.hammingValue++;
+                }
+
+                // manhattan
+                int goalI = (row[j] - 1) / dimension;
+                int goalJ = (row[j] - 1) % dimension;
+                this.manhattanValue += this.distance(i, j, goalI, goalJ);
+
+            }
+        }
     }
 
     private int distance(int ai, int aj, int bi, int bj) {
@@ -190,7 +200,7 @@ public class Board {
     private int[] findValue(int value) {
         for (int i = 0; i < this.tiles.length; i++) {
             for (int j = 0; j < this.tiles[i].length; j++) {
-                if (this.tiles[i][j] == 0) {
+                if (this.tiles[i][j] == value) {
                     return new int[]{i, j};
                 }
             }
@@ -209,7 +219,7 @@ public class Board {
     }
 
     private static class NeighborsIterator implements Iterator<Board> {
-        private Board[] neighbors = new Board[4];
+        private final Board[] neighbors = new Board[4];
         int maxBoardIdx = -1;
         int iteratorIdx = -1;
 
@@ -224,32 +234,36 @@ public class Board {
 
             // Top neighbor
             if (iZero > 0) {
-                Board topNeighbor = new Board(board.tiles);
+                Board topNeighbor = new Board(board.tiles, false);
                 topNeighbor.exchangeTiles(iZero, jZero, iZero - 1, jZero);
+                topNeighbor.preCalculate();
                 this.maxBoardIdx++;
                 this.neighbors[this.maxBoardIdx] = topNeighbor;
             }
 
             // Bottom neighbor
             if (iZero + 1 < board.dimension()) {
-                Board bottomNeighbor = new Board(board.tiles);
+                Board bottomNeighbor = new Board(board.tiles, false);
                 bottomNeighbor.exchangeTiles(iZero, jZero, iZero + 1, jZero);
+                bottomNeighbor.preCalculate();
                 this.maxBoardIdx++;
                 this.neighbors[this.maxBoardIdx] = bottomNeighbor;
             }
 
             // Left neighbor
             if (jZero > 0) {
-                Board leftNeighbor = new Board(board.tiles);
+                Board leftNeighbor = new Board(board.tiles, false);
                 leftNeighbor.exchangeTiles(iZero, jZero, iZero, jZero - 1);
+                leftNeighbor.preCalculate();
                 this.maxBoardIdx++;
                 this.neighbors[this.maxBoardIdx] = leftNeighbor;
             }
 
             // Right neighbor
             if (jZero + 1 < board.dimension()) {
-                Board rightNeighbor = new Board(board.tiles);
+                Board rightNeighbor = new Board(board.tiles, false);
                 rightNeighbor.exchangeTiles(iZero, jZero, iZero, jZero + 1);
+                rightNeighbor.preCalculate();
                 this.maxBoardIdx++;
                 this.neighbors[this.maxBoardIdx] = rightNeighbor;
             }
