@@ -161,8 +161,9 @@ public class Board {
                 }
             }
         }
-        Board twinBoard = new Board(this.tiles);
+        Board twinBoard = new Board(this.tiles, false);
         twinBoard.exchangeTiles(ai, aj, bi, bj);
+        twinBoard.preCalculate();
         return twinBoard;
     }
 
@@ -188,7 +189,6 @@ public class Board {
                 int goalI = (row[j] - 1) / dimension;
                 int goalJ = (row[j] - 1) % dimension;
                 this.manhattanValue += this.distance(i, j, goalI, goalJ);
-
             }
         }
     }
@@ -215,7 +215,7 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        // Unit tests are used instead.
+        // Proper unit tests are used instead.
     }
 
     private static class NeighborsIterator implements Iterator<Board> {
