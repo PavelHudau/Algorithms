@@ -1,7 +1,6 @@
 package com.pavelhudau.sliderpuzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -20,10 +19,10 @@ public class Solver {
             throw new IllegalArgumentException("initial can not be null");
         }
 
-        MinPQ minPq = new MinPQ();
+        MinPQ<SearchNode> minPq = new MinPQ<>();
         minPq.insert(new SearchNode(initial, 0, null));
 
-        MinPQ minPqTwin = new MinPQ();
+        MinPQ<SearchNode> minPqTwin = new MinPQ<>();
         minPqTwin.insert(new SearchNode(initial.twin(), 0, null));
 
         while (!isSolvedOrShouldStop(minPq) && !isSolvedOrShouldStop(minPqTwin)) {
@@ -35,16 +34,16 @@ public class Solver {
         this.saveSolution(minPq);
     }
 
-    private static boolean isSolvedOrShouldStop(MinPQ minPq) {
+    private static boolean isSolvedOrShouldStop(MinPQ<SearchNode> minPq) {
         return minPq.isEmpty() || isSolved(minPq);
     }
 
-    private static boolean isSolved(MinPQ minPq) {
-        return ((SearchNode) minPq.min()).board.isGoal();
+    private static boolean isSolved(MinPQ<SearchNode> minPq) {
+        return minPq.min().board.isGoal();
     }
 
-    private static void addNeighbors(MinPQ minPq) {
-        SearchNode node = (SearchNode) minPq.delMin();
+    private static void addNeighbors(MinPQ<SearchNode> minPq) {
+        SearchNode node = minPq.delMin();
         for (Board neighbor : node.board.neighbors()) {
             if (node.previous != null && neighbor.equals(node.previous.board)) {
                 // Optimization not to insert nodes that have already been looked at.
@@ -94,7 +93,7 @@ public class Solver {
         // Proper unit tests are used instead.
     }
 
-    private void saveSolution(MinPQ minPq) {
+    private void saveSolution(MinPQ<SearchNode> minPq) {
         if (minPq.isEmpty()) {
             return;
         }
@@ -102,7 +101,7 @@ public class Solver {
         if (isSolved(minPq)) {
             this.boardSolution = new Board[this.countSolutionMoves(minPq)];
             int insertIdx = this.boardSolution.length - 1;
-            SearchNode node = (SearchNode) minPq.min();
+            SearchNode node = minPq.min();
             while (node != null) {
                 this.boardSolution[insertIdx] = node.board;
                 node = node.previous;
@@ -111,9 +110,9 @@ public class Solver {
         }
     }
 
-    private int countSolutionMoves(MinPQ minPq) {
+    private int countSolutionMoves(MinPQ<SearchNode> minPq) {
         int size = 0;
-        SearchNode node = (SearchNode) minPq.min();
+        SearchNode node = minPq.min();
         while (node != null) {
             size++;
             node = node.previous;
@@ -134,27 +133,27 @@ public class Solver {
         }
 
         @Override
-        public int compareTo(Object o) {
-            if (o == null) {
+        public int compareTo(Object other) {
+            if (other == null) {
                 throw new NullPointerException("o can not be null");
             }
 
-            if (this == o) {
+            if (this == other) {
                 return 0;
             }
 
-            if (this.getClass() != o.getClass()) {
-                throw new ClassCastException("Can't compare " + this.getClass() + " and " + o.getClass());
+            if (this.getClass() != other.getClass()) {
+                throw new ClassCastException("Can't compare " + this.getClass() + " and " + other.getClass());
             }
 
-            return compareToManhattan((SearchNode) o);
+            return compareToManhattan((SearchNode) other);
         }
 
-        private int compareToHamming(SearchNode other) {
-            int hammingMyPriority = this.board.hamming() + this.steps;
-            int hammingOtherPriority = other.board.hamming() + other.steps;
-            return hammingMyPriority - hammingOtherPriority;
-        }
+//        private int compareToHamming(SearchNode other) {
+//            int hammingMyPriority = this.board.hamming() + this.steps;
+//            int hammingOtherPriority = other.board.hamming() + other.steps;
+//            return hammingMyPriority - hammingOtherPriority;
+//        }
 
         private int compareToManhattan(SearchNode other) {
             int manhattanMyPriority = this.board.manhattan() + this.steps;
@@ -196,7 +195,7 @@ public class Solver {
                 currentIdx++;
                 return current;
             } else {
-                throw new NoSuchElementException();
+                throw new NoSuchElementException("There are no more elements.");
             }
         }
 

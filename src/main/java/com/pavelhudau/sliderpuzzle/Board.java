@@ -1,7 +1,7 @@
 package com.pavelhudau.sliderpuzzle;
 
-
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import edu.princeton.cs.algs4.StdRandom;
 
@@ -146,19 +146,22 @@ public class Board {
      * @return a board that is obtained by exchanging any pair of tiles.
      */
     public Board twin() {
+        int dimension = this.dimension();
         int ai = StdRandom.uniform(this.dimension());
         int aj = StdRandom.uniform(this.dimension());
         int bi = StdRandom.uniform(this.dimension());
         int bj = StdRandom.uniform(this.dimension());
-        while (this.tiles[bi][bj] == 0 || bi == ai && bj == aj) {
+        while (this.tiles[ai][aj] == 0) {
+            aj = (aj + 1) % dimension;
+            if (aj == 0) {
+                ai = (ai + 1) % dimension;
+            }
+        }
+        while (this.tiles[bi][bj] == 0 || (bi == ai && bj == aj)) {
             // If got to 0 (blank slot) of to the same tile, then just move to next tile.
-            bj++;
-            if (bj >= this.dimension()) {
-                bj = 0;
-                bi++;
-                if (bi >= this.dimension()) {
-                    bi = 0;
-                }
+            bj = (bj + 1) % dimension;
+            if (bj == 0) {
+                bi = (bi + 1) % dimension;
             }
         }
         Board twinBoard = new Board(this.tiles, false);
@@ -276,6 +279,9 @@ public class Board {
 
         @Override
         public Board next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException("There are no more elements.");
+            }
             this.iteratorIdx++;
             return this.neighbors[this.iteratorIdx];
         }

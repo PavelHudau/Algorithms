@@ -280,18 +280,76 @@ public class TestBoard {
     }
 
     @Test
-    void testTwin() {
+    void testTwin2x2() {
         // NOTE: the test is not consistent as it tries to validate
         // behavior that is based on randomness.
         // The test makes hundred attempts to create a duplicated twin board.
         // Twin board should not be equal to original board.
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             int[][] tiles = {
                     {1, 2},
                     {3, 0}
             };
             Board board = new Board(tiles);
-            assertFalse(board.equals(board.twin()));
+            assertTwins(board, board.twin());
         }
+    }
+
+    @Test
+    void testTwin3x3() {
+        // NOTE: the test is not consistent as it tries to validate
+        // behavior that is based on randomness.
+        // The test makes hundred attempts to create a duplicated twin board.
+        // Twin board should not be equal to original board.
+        for (int i = 0; i < 1000; i++) {
+            int[][] tiles = {
+                    {3, 8, 6},
+                    {0, 2, 4},
+                    {5, 1, 7}
+            };
+            Board board = new Board(tiles);
+            assertTwins(board, board.twin());
+        }
+    }
+
+    @Test
+    void testTwin4x4() {
+        // NOTE: the test is not consistent as it tries to validate
+        // behavior that is based on randomness.
+        // The test makes hundred attempts to create a duplicated twin board.
+        // Twin board should not be equal to original board.
+        for (int i = 0; i < 1000; i++) {
+            int[][] tiles = {
+                    {8, 14, 0, 1},
+                    {3, 15, 6, 4},
+                    {12, 9, 11, 7},
+                    {2, 13, 5, 10}
+            };
+            Board board = new Board(tiles);
+            assertTwins(board, board.twin());
+        }
+    }
+
+    @Test
+    void testTwin5x5() {
+        // NOTE: the test is not consistent as it tries to validate
+        // behavior that is based on randomness.
+        // The test makes hundred attempts to create a duplicated twin board.
+        // Twin board should not be equal to original board.
+        for (int i = 0; i < 1000; i++) {
+            int[][] tiles = {
+                    {22, 11, 1, 18, 24},
+                    {21, 3, 0, 2, 12},
+                    {7, 20, 14, 8, 19},
+                    {5, 10, 4, 17, 9},
+                    {6, 15, 16, 13, 23}
+            };
+            Board board = new Board(tiles);
+            assertTwins(board, board.twin());
+        }
+    }
+
+    private static void assertTwins(Board a, Board b) {
+        assertFalse(a.equals(b));
     }
 }
