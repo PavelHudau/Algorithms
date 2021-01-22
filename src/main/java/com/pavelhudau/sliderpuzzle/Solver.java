@@ -68,7 +68,7 @@ public class Solver {
      * @return min number of moves to solve initial board; -1 if unsolvable.
      */
     public int moves() {
-        return this.boardSolution == null ? UNSOLVABLE : this.boardSolution.length;
+        return this.boardSolution == null ? UNSOLVABLE : this.boardSolution.length - 1;
     }
 
     /**
@@ -121,7 +121,7 @@ public class Solver {
         return size;
     }
 
-    private static class SearchNode implements Comparable {
+    private static class SearchNode implements Comparable<SearchNode> {
         private final Board board;
         private final int steps;
         private final SearchNode previous;
@@ -133,7 +133,7 @@ public class Solver {
         }
 
         @Override
-        public int compareTo(Object other) {
+        public int compareTo(SearchNode other) {
             if (other == null) {
                 throw new NullPointerException("o can not be null");
             }

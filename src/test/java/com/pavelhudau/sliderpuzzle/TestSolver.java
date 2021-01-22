@@ -15,7 +15,7 @@ public class TestSolver {
                 {7, 8, 6}
         }));
         assertTrue(solver.isSolvable());
-        assertEquals(5, solver.moves());
+        assertEquals(4, solver.moves());
         assertNotNull(solver.solution());
         int move = 0;
         for (Board solution : solver.solution()) {
@@ -74,7 +74,7 @@ public class TestSolver {
                     {3, 2}
             }));
             assertTrue(solver.isSolvable());
-            assertEquals(2, solver.moves());
+            assertEquals(1, solver.moves());
             assertNotNull(solver.solution());
         });
     }
@@ -92,7 +92,7 @@ public class TestSolver {
             assertNull(solver.solution());
         });
     }
-    
+
 // MAY TAKE LONG TIME
 //    @Test
 //    void testWhenThereIsNoSolution4x4() {

@@ -207,12 +207,12 @@ public class Board {
     }
 
     private boolean testForTwin(Board twin) {
-        if(this.equals(twin)){
+        if (this.equals(twin)) {
             return false;
         }
         int[] thisZero = this.findValue(0);
         int[] twinZero = twin.findValue(0);
-        if(thisZero[0] != twinZero[0] || thisZero[1] != twinZero[1]) {
+        if (thisZero[0] != twinZero[0] || thisZero[1] != twinZero[1]) {
             return false;
         }
         return true;
@@ -320,7 +320,7 @@ public class Board {
                 if (tiles[ai][aj] == 0) {
                     this.twinIdxA = (this.twinIdxA + 1) % tileCount;
                     ai = (this.twinIdxA + this.twinDeltaA) / dimension;
-                    aj = (this.twinIdxA + this.twinDeltaA) % dimension;;
+                    aj = (this.twinIdxA + this.twinDeltaA) % dimension;
                 }
 
                 int bi = (this.twinIdxB + this.twinDeltaB) / dimension;
