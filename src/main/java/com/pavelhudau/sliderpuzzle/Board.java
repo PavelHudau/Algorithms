@@ -9,6 +9,7 @@ public class Board {
     private final int[][] tiles;
     private int hammingValue;
     private int manhattanValue;
+    private TwinGenerator twinGenerator;
 
     /**
      * Create a board from an n-by-n array of tiles,
@@ -146,28 +147,12 @@ public class Board {
      * @return a board that is obtained by exchanging any pair of tiles.
      */
     public Board twin() {
-        int dimension = this.dimension();
-        int ai = StdRandom.uniform(this.dimension());
-        int aj = StdRandom.uniform(this.dimension());
-        int bi = StdRandom.uniform(this.dimension());
-        int bj = StdRandom.uniform(this.dimension());
-        while (this.tiles[ai][aj] == 0) {
-            aj = (aj + 1) % dimension;
-            if (aj == 0) {
-                ai = (ai + 1) % dimension;
-            }
+        if (this.twinGenerator == null) {
+            this.twinGenerator = new TwinGenerator();
         }
-        while (this.tiles[bi][bj] == 0 || (bi == ai && bj == aj)) {
-            // If got to 0 (blank slot) of to the same tile, then just move to next tile.
-            bj = (bj + 1) % dimension;
-            if (bj == 0) {
-                bi = (bi + 1) % dimension;
-            }
-        }
-        Board twinBoard = new Board(this.tiles, false);
-        twinBoard.exchangeTiles(ai, aj, bi, bj);
-        twinBoard.preCalculate();
-        return twinBoard;
+        Board twin = this.twinGenerator.next();
+        assert this.testForTwin(twin);
+        return twin;
     }
 
     private void preCalculate() {
@@ -219,6 +204,18 @@ public class Board {
 
     public static void main(String[] args) {
         // Proper unit tests are used instead.
+    }
+
+    private boolean testForTwin(Board twin) {
+        if(this.equals(twin)){
+            return false;
+        }
+        int[] thisZero = this.findValue(0);
+        int[] twinZero = twin.findValue(0);
+        if(thisZero[0] != twinZero[0] || thisZero[1] != twinZero[1]) {
+            return false;
+        }
+        return true;
     }
 
     private static class NeighborsIterator implements Iterator<Board> {
@@ -289,6 +286,55 @@ public class Board {
         @Override
         public void remove() {
             throw new UnsupportedOperationException("remove is not supported");
+        }
+    }
+
+    private class TwinGenerator {
+        private final int twinDeltaA;
+        private final int twinDeltaB;
+        private int twinIdxA = 0;
+        private int twinIdxB = 0;
+
+        public TwinGenerator() {
+            int dimension = dimension();
+            this.twinDeltaA = StdRandom.uniform(dimension);
+            this.twinDeltaB = StdRandom.uniform(dimension);
+        }
+
+        public Board next() {
+            int dimension = dimension();
+            int tileCount = dimension * dimension;
+
+            while (true) {
+                this.twinIdxB = (this.twinIdxB + 1) % tileCount;
+                if (this.twinIdxB == 0) {
+                    this.twinIdxA = (this.twinIdxA + 1) % tileCount;
+                    if (this.twinIdxA >= tileCount) {
+                        this.twinIdxA = 0;
+                    }
+                    this.twinIdxB = this.twinIdxA + 1;
+                }
+
+                int ai = (this.twinIdxA + this.twinDeltaA) / dimension;
+                int aj = (this.twinIdxA + this.twinDeltaA) % dimension;
+                if (tiles[ai][aj] == 0) {
+                    this.twinIdxA = (this.twinIdxA + 1) % tileCount;
+                    ai = (this.twinIdxA + this.twinDeltaA) / dimension;
+                    aj = (this.twinIdxA + this.twinDeltaA) % dimension;;
+                }
+
+                int bi = (this.twinIdxB + this.twinDeltaB) / dimension;
+                int bj = (this.twinIdxB + this.twinDeltaB) % dimension;
+                if (tiles[bi][bj] == 0 || (bi == ai && bj == aj)) {
+                    continue;
+                }
+
+                Board twinBoard = new Board(tiles, false);
+                twinBoard.exchangeTiles(ai, aj, bi, bj);
+                twinBoard.preCalculate();
+
+                return twinBoard;
+            }
         }
     }
 }

@@ -2,10 +2,12 @@ package com.pavelhudau.sliderpuzzle;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSolver {
-    @Test
+    @Test()
     void testStepByStepWhenThereIsSolution() {
         Solver solver = new Solver(new Board(new int[][]{
                 {0, 1, 3},
@@ -65,27 +67,45 @@ public class TestSolver {
     }
 
     @Test
-    void testWhenThereIsSolution3x3() {
-        Solver solver = new Solver(new Board(new int[][]{
-                {1, 2, 3},
-                {4, 5, 6},
-                {8, 7, 0}
-        }));
-        assertFalse(solver.isSolvable());
-        assertEquals(-1, solver.moves());
-        assertNull(solver.solution());
+    void testWhenThereIsSolution2x2() {
+        assertTimeout(Duration.ofMinutes(1), () -> {
+            Solver solver = new Solver(new Board(new int[][]{
+                    {1, 0},
+                    {3, 2}
+            }));
+            assertTrue(solver.isSolvable());
+            assertEquals(2, solver.moves());
+            assertNotNull(solver.solution());
+        });
     }
 
     @Test
-    void testWhenThereIsSolution4x4() {
-        Solver solver = new Solver(new Board(new int[][]{
-                {1, 2, 3, 4},
-                {5, 6, 7, 8},
-                {9, 10, 11, 12},
-                {13, 15, 14, 0}
-        }));
-        assertFalse(solver.isSolvable());
-        assertEquals(-1, solver.moves());
-        assertNull(solver.solution());
+    void testWhenThereIsNoSolution3x3() {
+        assertTimeout(Duration.ofMinutes(1), () -> {
+            Solver solver = new Solver(new Board(new int[][]{
+                    {1, 2, 3},
+                    {4, 5, 6},
+                    {8, 7, 0}
+            }));
+            assertFalse(solver.isSolvable());
+            assertEquals(-1, solver.moves());
+            assertNull(solver.solution());
+        });
     }
+    
+// MAY TAKE LONG TIME
+//    @Test
+//    void testWhenThereIsNoSolution4x4() {
+//        assertTimeout(Duration.ofMinutes(1), () -> {
+//            Solver solver = new Solver(new Board(new int[][]{
+//                    {1, 2, 3, 4},
+//                    {5, 6, 7, 8},
+//                    {9, 10, 11, 12},
+//                    {13, 15, 14, 0}
+//            }));
+//            assertFalse(solver.isSolvable());
+//            assertEquals(-1, solver.moves());
+//            assertNull(solver.solution());
+//        });
+//    }
 }
