@@ -84,17 +84,4 @@ public class TestPointSET {
         assertTrue(ps.contains(new Point2D(0.2, 0.1)));
         assertFalse(ps.contains(new Point2D(0.3, 0.3)));
     }
-
-//    Doesn't run on with CI/CD
-//    @Test
-//    void testDraw() {
-//        // GIVEN
-//        PointSET ps = new PointSET();
-//        // WHEN
-//        ps.insert(new Point2D(0.1, 0.2));
-//        // THEN
-//        assertDoesNotThrow(() -> {
-//            ps.draw();
-//        });
-//    }
 }
