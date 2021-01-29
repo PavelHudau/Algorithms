@@ -60,7 +60,7 @@ public class PointSET {
      * Draw all points to standard draw
      */
     public void draw() {
-        for (Point2D p: this.points) {
+        for (Point2D p : this.points) {
             StdDraw.point(p.x(), p.y());
         }
     }
@@ -79,7 +79,7 @@ public class PointSET {
         return () -> {
             ArrayList<Point2D> range = new ArrayList<>();
             for (Point2D p : points) {
-                if(rect.contains(p)) {
+                if (rect.contains(p)) {
                     range.add(p);
                 }
             }
@@ -100,14 +100,14 @@ public class PointSET {
         Point2D nearest = null;
         double smallestDistance = Double.POSITIVE_INFINITY;
         for (Point2D pp : points) {
-            if(nearest != null) {
+            if (nearest != null) {
                 double distanceToPP = p.distanceSquaredTo(pp);
-                if(distanceToPP < smallestDistance) {
+                if (distanceToPP < smallestDistance) {
                     smallestDistance = distanceToPP;
                     nearest = pp;
                 }
-            }
-            else{
+            } else {
+                smallestDistance = p.distanceSquaredTo(pp);
                 nearest = pp;
             }
         }
