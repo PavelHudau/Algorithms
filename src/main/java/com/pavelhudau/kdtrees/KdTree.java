@@ -44,7 +44,7 @@ public class KdTree {
         if (this.root != null) {
             insertedNode = this.insertPoint(p, this.root);
         } else {
-            insertedNode = new Node(p, false);
+            insertedNode = new Node(p, true);
             this.root = insertedNode;
         }
         if (insertedNode != null) {
@@ -110,7 +110,7 @@ public class KdTree {
     }
 
     private static boolean goesLeft(Point2D p, Node current) {
-        return current.isBlue
+        return current.isRed
                 ? p.x() < current.point.x()
                 : p.y() < current.point.y();
     }
@@ -155,14 +155,14 @@ public class KdTree {
             if (current.left != null) {
                 return insertPoint(p, current.left);
             } else {
-                current.left = new Node(p, !current.isBlue);
+                current.left = new Node(p, !current.isRed);
                 return current.left;
             }
         } else {
             if (current.right != null) {
                 return insertPoint(p, current.right);
             } else {
-                current.right = new Node(p, !current.isBlue);
+                current.right = new Node(p, !current.isRed);
                 return current.right;
             }
         }
@@ -189,7 +189,7 @@ public class KdTree {
         if (searchRect.contains(currentNode.point)) {
             matchingPoints.add(currentNode.point);
         }
-        if (currentNode.isBlue) {
+        if (currentNode.isRed) {
             if (currentNode.left != null) {
                 RectHV leftRect = rectLeft(nodeRect, currentNode.point);
                 if (leftRect.intersects(searchRect)) {
@@ -230,7 +230,7 @@ public class KdTree {
         // explore—the closest point found while exploring the first subtree may enable pruning of the second subtree.
         Point2D nearestSoFar = currentNode.point;
         double nearestSoFarSqDistance = searchPoint.distanceSquaredTo(currentNode.point);
-        if (currentNode.isBlue) {
+        if (currentNode.isRed) {
             if (currentNode.left != null) {
                 RectHV leftRect = rectLeft(nodeRect, currentNode.point);
                 if (leftRect.distanceSquaredTo(searchPoint) < nearestSoFarSqDistance) {
@@ -290,13 +290,13 @@ public class KdTree {
 
     private static class Node {
         private final Point2D point;
-        private final boolean isBlue;
+        private final boolean isRed;
         private Node left = null;
         private Node right = null;
 
-        public Node(Point2D point, boolean isBlue) {
+        public Node(Point2D point, boolean isRed) {
             this.point = point;
-            this.isBlue = isBlue;
+            this.isRed = isRed;
         }
     }
 }

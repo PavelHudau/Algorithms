@@ -1,11 +1,14 @@
 package com.pavelhudau.kdtrees;
 
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.ArrayList;
 
 public class PointSET {
-    private SET<Point2D> points = new SET<>();
+    private final SET<Point2D> points = new SET<>();
 
     /**
      * Construct an empty set of points.
