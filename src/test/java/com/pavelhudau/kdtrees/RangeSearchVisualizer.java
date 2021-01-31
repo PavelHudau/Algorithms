@@ -8,12 +8,12 @@ public class RangeSearchVisualizer {
         String filename = args.length > 0 ? args[0] : "src/main/resources/input100K.txt";
         In in = new In(filename);
         PointSET brute = new PointSET();
-//        KdTree kdtree = new KdTree();
+        KdTree kdtree = new KdTree();
         while (!in.isEmpty()) {
             double x = in.readDouble();
             double y = in.readDouble();
             Point2D p = new Point2D(x, y);
-//            kdtree.insert(p);
+            kdtree.insert(p);
             brute.insert(p);
         }
 
@@ -31,7 +31,6 @@ public class RangeSearchVisualizer {
         // process range search queries
         StdDraw.enableDoubleBuffering();
         while (true) {
-
             // user starts to drag a rectangle
             if (StdDraw.isMousePressed() && !isDragging) {
                 x0 = x1 = StdDraw.mouseX();
@@ -72,9 +71,9 @@ public class RangeSearchVisualizer {
             // draw the range search results for kd-tree in blue
             StdDraw.setPenRadius(0.02);
             StdDraw.setPenColor(StdDraw.BLUE);
-//            for (Point2D p : kdtree.range(rect)) {
-//                p.draw();
-//            }
+            for (Point2D p : kdtree.range(rect)) {
+                p.draw();
+            }
             StdDraw.show();
             StdDraw.pause(20);
         }

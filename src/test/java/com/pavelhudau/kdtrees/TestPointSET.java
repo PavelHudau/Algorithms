@@ -67,6 +67,15 @@ public class TestPointSET {
     }
 
     @Test
+    void testInsertNull() {
+        // GIVEN
+        PointSET ps = new PointSET();
+        // WHEN
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> ps.insert(null));
+    }
+
+    @Test
     void testContainsWhenEmpty() {
         // GIVEN
         PointSET ps = new PointSET();
@@ -87,6 +96,15 @@ public class TestPointSET {
         assertTrue(ps.contains(new Point2D(0.1, 0.2)));
         assertTrue(ps.contains(new Point2D(0.2, 0.1)));
         assertFalse(ps.contains(new Point2D(0.3, 0.3)));
+    }
+
+    @Test
+    void testContainsNull() {
+        // GIVEN
+        PointSET ps = new PointSET();
+        // WHEN
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> ps.contains(null));
     }
 
     @Test
@@ -126,6 +144,15 @@ public class TestPointSET {
             pointsInRangeCnt++;
         }
         assertEquals(5, pointsInRangeCnt);
+    }
+
+    @Test
+    void testRangeWhenRectangleNull() {
+        // GIVEN
+        PointSET ps = new PointSET();
+        // WHEN
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> ps.range(null));
     }
 
     @Test
@@ -204,5 +231,14 @@ public class TestPointSET {
         }
         //THEN
         assertTrue(nearest.contains(ps.nearest(new Point2D(0.3, 0.3))));
+    }
+
+    @Test
+    void testNearestWhenPointNull() {
+        // GIVEN
+        PointSET ps = new PointSET();
+        // WHEN
+        //THEN
+        assertThrows(IllegalArgumentException.class, () -> ps.nearest(null));
     }
 }
