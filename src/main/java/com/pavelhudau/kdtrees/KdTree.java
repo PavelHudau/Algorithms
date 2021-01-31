@@ -82,38 +82,48 @@ public class KdTree {
         if (rect == null) {
             throw new IllegalArgumentException("rect can not be null");
         }
-        RectHV nodeRect = new RectHV(0, 0, 1, 1);
+
         ArrayList<Point2D> matchingPoints = new ArrayList<>();
+        if(this.root == null) {
+            return matchingPoints;
+        }
+
+        RectHV nodeRect = new RectHV(0, 0, 1, 1);
         range(this.root, nodeRect, rect, matchingPoints);
         return matchingPoints;
     }
 
     private void range(Node currentNode, RectHV nodeRect, RectHV searchRect, ArrayList<Point2D> matchingPoints) {
         //TODO: 1. split nodeRect, 2. go left or right or top, or bottom splitting nodeRect
-        if(currentNode == null) {
-            return;
-        }
         if(searchRect.contains(currentNode.point)) {
             matchingPoints.add(currentNode.point);
         }
         if(currentNode.isBlue) {
-            RectHV leftRect = new RectHV(nodeRect.xmin(), nodeRect.ymin(), currentNode.point.x(), nodeRect.ymax());
-            if (leftRect.intersects(searchRect)) {
-                range(currentNode.left, leftRect, searchRect, matchingPoints);
+            if(currentNode.left != null) {
+                RectHV leftRect = new RectHV(nodeRect.xmin(), nodeRect.ymin(), currentNode.point.x(), nodeRect.ymax());
+                if (leftRect.intersects(searchRect)) {
+                    range(currentNode.left, leftRect, searchRect, matchingPoints);
+                }
             }
-            RectHV rightRect = new RectHV(currentNode.point.x(), nodeRect.ymin(), nodeRect.xmax(), nodeRect.ymax());
-            if(rightRect.intersects(searchRect)) {
-                range(currentNode.right, rightRect, searchRect, matchingPoints);
+            if(currentNode.right != null) {
+                RectHV rightRect = new RectHV(currentNode.point.x(), nodeRect.ymin(), nodeRect.xmax(), nodeRect.ymax());
+                if (rightRect.intersects(searchRect)) {
+                    range(currentNode.right, rightRect, searchRect, matchingPoints);
+                }
             }
         }
         else {
-            RectHV bottomRect = new RectHV(nodeRect.xmin(), nodeRect.ymin(), nodeRect.xmax(), currentNode.point.y());
-            if (bottomRect.intersects(searchRect)) {
-                range(currentNode.left, bottomRect, searchRect, matchingPoints);
+            if(currentNode.left != null) {
+                RectHV bottomRect = new RectHV(nodeRect.xmin(), nodeRect.ymin(), nodeRect.xmax(), currentNode.point.y());
+                if (bottomRect.intersects(searchRect)) {
+                    range(currentNode.left, bottomRect, searchRect, matchingPoints);
+                }
             }
-            RectHV topRect = new RectHV(nodeRect.xmin(), currentNode.point.y(), nodeRect.xmax(), nodeRect.ymax());
-            if(topRect.intersects(searchRect)) {
-                range(currentNode.right, topRect, searchRect, matchingPoints);
+            if(currentNode.right != null) {
+                RectHV topRect = new RectHV(nodeRect.xmin(), currentNode.point.y(), nodeRect.xmax(), nodeRect.ymax());
+                if (topRect.intersects(searchRect)) {
+                    range(currentNode.right, topRect, searchRect, matchingPoints);
+                }
             }
         }
     }
