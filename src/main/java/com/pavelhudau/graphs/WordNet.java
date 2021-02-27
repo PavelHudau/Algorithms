@@ -3,15 +3,15 @@ package com.pavelhudau.graphs;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.ST;
+import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.DirectedCycle;
 
 
 public class WordNet {
     private final Digraph digraph;
-    private final ST<String, Integer> nounsToSynsetKeyMap;
+    private final ST<String, SET<Integer>> nounsToSynsetKeyMap;
     private final ST<Integer, String> synsetToNounsKeyMap;
     private final SAP sap;
-    private String[] synsetToNouns;
     private int verticesCount = 0;
 
     /**
@@ -71,12 +71,12 @@ public class WordNet {
      *
      * @param nounA Noun A.
      * @param nounB Noun B.
-     * @return
+     * @return Distance between nounA and nounB.
      */
     public int distance(String nounA, String nounB) {
-        int nounASynset = this.nounSynset(nounA);
-        int nounBSynset = this.nounSynset(nounB);
-        return this.sap.length(nounASynset, nounBSynset);
+        Iterable<Integer> nounASynsets = this.nounSynset(nounA);
+        Iterable<Integer> nounBSynsets = this.nounSynset(nounB);
+        return this.sap.length(nounASynsets, nounBSynsets);
     }
 
     /**
@@ -88,14 +88,14 @@ public class WordNet {
      * @return A synset that is the common ancestor of nounA and nounB in a shortest ancestral path.
      */
     public String sap(String nounA, String nounB) {
-        int nounASynset = this.nounSynset(nounA);
-        int nounBSynset = this.nounSynset(nounB);
+        Iterable<Integer> nounASynset = this.nounSynset(nounA);
+        Iterable<Integer> nounBSynset = this.nounSynset(nounB);
         int shortestAncestorSynset = this.sap.ancestor(nounASynset, nounBSynset);
         return this.synsetToNounsKeyMap.get(shortestAncestorSynset);
     }
 
     private void loadSynsets(String synsetsFileName) {
-        this.verticesCount = 0;
+        int maxSynsetKey = -1;
         In synsetsInput = new In(synsetsFileName);
         while (synsetsInput.hasNextLine()) {
             String line = synsetsInput.readLine();
@@ -104,16 +104,21 @@ public class WordNet {
                 if (split.length > 1) {
                     int synsetKey = Integer.parseInt(split[0]);
                     String synsetNouns = split[1];
-
-                    this.verticesCount = Math.max(this.verticesCount, synsetKey);
+                    maxSynsetKey = Math.max(maxSynsetKey, synsetKey);
                     for (String noun : synsetNouns.split(" ")) {
-                        this.nounsToSynsetKeyMap.put(noun, synsetKey);
+                        SET<Integer> synsets = this.nounsToSynsetKeyMap.get(noun);
+                        if(synsets == null) {
+                            synsets = new SET<>();
+                            this.nounsToSynsetKeyMap.put(noun, synsets);
+                        }
+                        synsets.add(synsetKey);
                     }
 
                     synsetToNounsKeyMap.put(synsetKey, synsetNouns);
                 }
             }
         }
+        this.verticesCount = maxSynsetKey + 1;
     }
 
     private Digraph buildDigraph(String hypernyms) {
@@ -145,14 +150,14 @@ public class WordNet {
         return rootedCheck.isRooted();
     }
 
-    private int nounSynset(String noun) {
+    private Iterable<Integer> nounSynset(String noun) {
         if (noun == null) {
             throw new IllegalArgumentException("noun can not be null");
         }
-        Integer synset= this.nounsToSynsetKeyMap.get(noun);
-        if (synset == null) {
+        SET<Integer> synsets= this.nounsToSynsetKeyMap.get(noun);
+        if (synsets == null) {
             throw new IllegalArgumentException(noun + " is not a noun.");
         }
-        return synset;
+        return synsets;
     }
 }

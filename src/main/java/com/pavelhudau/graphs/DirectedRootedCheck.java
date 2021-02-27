@@ -12,14 +12,13 @@ public class DirectedRootedCheck {
     private Digraph digraph;
     private Digraph digraphReverse;
     private boolean rooted = true;
-    private int root;
     private boolean[] marked;
 
     public DirectedRootedCheck(Digraph digraph) {
         this.digraph = digraph;
 
-        this.root = this.findRootCandidate();
-        if (this.root == NO_ROOT) {
+        int root = this.findRootCandidate();
+        if (root == NO_ROOT) {
             // If there is no root, then graph is not rooted.
             this.rooted = false;
             return;
@@ -29,8 +28,8 @@ public class DirectedRootedCheck {
         this.marked = new boolean[this.digraphReverse.V()];
         // Run DFS on reverse graph starting from root, if all vertices get marked,
         // then there is a path from all vertices to the root.
-        this.dfsOnReversedDigraph(this.root);
-        for (boolean isMarked: marked) {
+        this.dfsOnReversedDigraph(root);
+        for (boolean isMarked : marked) {
             if (!isMarked) {
                 this.rooted = false;
                 break;
@@ -47,8 +46,8 @@ public class DirectedRootedCheck {
     }
 
     private int findRootCandidate() {
-        for(int v = 0; v < this.digraph.V(); v++) {
-            if(this.digraph.outdegree(v) == 0) {
+        for (int v = 0; v < this.digraph.V(); v++) {
+            if (this.digraph.outdegree(v) == 0) {
                 return v;
             }
         }

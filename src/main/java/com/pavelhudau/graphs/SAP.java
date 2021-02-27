@@ -2,6 +2,7 @@ package com.pavelhudau.graphs;
 
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.Queue;
+import edu.princeton.cs.algs4.SET;
 
 import java.util.Collections;
 
@@ -11,10 +12,10 @@ import java.util.Collections;
 public class SAP {
     private static final int NOT_FOUND = -1;
     private final Digraph digraph;
-    private int lastV;
-    private int lastW;
     private int lastShortestDistance;
     private int lastClosestAncestor;
+    private SET<Integer> lastVs = new SET<>();
+    private SET<Integer> lastWs = new SET<>();
 
     /**
      * Constructor takes a digraph (not necessarily a DAG)
@@ -33,20 +34,7 @@ public class SAP {
      * @return Length of shortest ancestral path between v and w; -1 if no path found between v and w.
      */
     public int length(int v, int w) {
-        this.validateVertex(v);
-        this.validateVertex(w);
-
-        if (v == w) {
-            return 0;
-        }
-
-        if (v != this.lastV || w != this.lastW) {
-            this.runBfsForVertices(Collections.singletonList(v), Collections.singletonList(w));
-        }
-
-        this.lastV = v;
-        this.lastW = w;
-
+        this.runBfsForVertices(Collections.singletonList(v), Collections.singletonList(w));
         return this.lastShortestDistance;
     }
 
@@ -58,20 +46,7 @@ public class SAP {
      * @return Common ancestor vertex; -1 if no path found between v and w.
      */
     public int ancestor(int v, int w) {
-        this.validateVertex(v);
-        this.validateVertex(w);
-
-        if (v == w) {
-            return v;
-        }
-
-        if (v != this.lastV || w != this.lastW) {
-            this.runBfsForVertices(Collections.singletonList(v), Collections.singletonList(w));
-        }
-
-        this.lastV = v;
-        this.lastW = w;
-
+        this.runBfsForVertices(Collections.singletonList(v), Collections.singletonList(w));
         return this.lastClosestAncestor;
     }
 
@@ -84,8 +59,6 @@ public class SAP {
      * @return shortest ancestral path between any vertex in v and any vertex in w; -1 if no such path.
      */
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
-        this.validateVertices(v);
-        this.validateVertices(w);
         this.runBfsForVertices(v, w);
         return this.lastShortestDistance;
     }
@@ -98,8 +71,6 @@ public class SAP {
      * @return Common ancestor vertex; -1 if no path found between sets v and w.
      */
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
-        this.validateVertices(v);
-        this.validateVertices(w);
         this.runBfsForVertices(v, w);
         return this.lastClosestAncestor;
     }
@@ -117,11 +88,17 @@ public class SAP {
     }
 
     private void runBfsForVertices(Iterable<Integer> vs, Iterable<Integer> ws) {
-        this.validateVertices(vs);
-        this.validateVertices(ws);
-        BfsForVertex vBfs = new BfsForVertex(this.digraph, vs);
-        BfsForVertex wBfs = new BfsForVertex(this.digraph, ws);
-        this.findCommonAncestor(vBfs, wBfs);
+        SET<Integer> newVs = toSet(vs);
+        SET<Integer> newWs = toSet(ws);
+        if(!newWs.equals(this.lastVs) || !newWs.equals(this.lastWs)) {
+            this.validateVertices(newVs);
+            this.validateVertices(newWs);
+            BfsForVertex vBfs = new BfsForVertex(this.digraph, newVs);
+            BfsForVertex wBfs = new BfsForVertex(this.digraph, newWs);
+            this.findCommonAncestor(vBfs, wBfs);
+            this.lastVs = newVs;
+            this.lastWs = newWs;
+        }
     }
 
     private void findCommonAncestor(BfsForVertex vBfs, BfsForVertex wBfs) {
@@ -136,6 +113,14 @@ public class SAP {
                 }
             }
         }
+    }
+
+    private static SET<Integer> toSet(Iterable<Integer> iterable) {
+        SET<Integer> set = new SET<>();
+        for(int it : iterable) {
+            set.add(it);
+        }
+        return set;
     }
 
     private static class BfsForVertex {
