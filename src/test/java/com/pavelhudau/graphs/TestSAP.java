@@ -3,7 +3,10 @@ package com.pavelhudau.graphs;
 import edu.princeton.cs.algs4.Digraph;
 import org.junit.jupiter.api.Test;
 
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSAP {
     @Test
@@ -45,6 +48,19 @@ public class TestSAP {
     }
 
     @Test
+    void testLengthWhenTwoNodeDigraph() {
+        SAP sap = new SAP(createTwoNodeDigraph());
+        assertEquals(1, sap.length(0, 1));
+        assertEquals(1, sap.length(1, 0));
+    }
+
+    @Test
+    void testLengthWhenOneNodeDigraph() {
+        SAP sap = new SAP(createOneNodeDigraph());
+        assertEquals(0, sap.length(0, 0));
+    }
+
+    @Test
     void testAncestorWhenGraphIsTriangle() {
         SAP sap = new SAP(createTriangleDigraph());
         assertEquals(0, sap.ancestor(1, 5));
@@ -83,6 +99,37 @@ public class TestSAP {
         assertThrows(IllegalArgumentException.class, () -> sap.ancestor(1, 7));
     }
 
+    @Test
+    void testAncestorWhenTwoNodeDigraph() {
+        SAP sap = new SAP(createTwoNodeDigraph());
+        assertEquals(1, sap.ancestor(0, 1));
+        assertEquals(1, sap.ancestor(1, 0));
+    }
+
+    @Test
+    void testAncestorWhenOneNodeDigraph() {
+        SAP sap = new SAP(createOneNodeDigraph());
+        assertEquals(0, sap.ancestor(0, 0));
+    }
+
+    @Test
+    void testLengthWithMultiNodes() {
+        SAP sap = new SAP(createTreeLikeDigraph());
+        assertEquals(4, sap.length(asIterable(new int[]{13, 14}), asIterable(new int[]{15, 16})));
+        assertEquals(4, sap.length(asIterable(new int[]{13, 14}), asIterable(new int[]{22, 16})));
+        assertEquals(3, sap.length(asIterable(new int[]{13, 5}), asIterable(new int[]{4, 24})));
+        assertEquals(4, sap.length(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
+    }
+
+    @Test
+    void testAncestorWithMultiNodes() {
+        SAP sap = new SAP(createTreeLikeDigraph());
+        assertEquals(3, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[]{15, 16})));
+        assertEquals(3, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[]{22, 16})));
+        assertEquals(5, sap.ancestor(asIterable(new int[]{13, 5}), asIterable(new int[]{4, 24})));
+        assertEquals(3, sap.ancestor(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
+    }
+
     private static Digraph createTriangleDigraph() {
         Digraph di = new Digraph(6);
         di.addEdge(1, 2);
@@ -101,5 +148,50 @@ public class TestSAP {
         di.addEdge(3, 4);
         di.addEdge(5, 4);
         return di;
+    }
+
+    private static Digraph createTwoNodeDigraph() {
+        Digraph di = new Digraph(2);
+        di.addEdge(0, 1);
+        return di;
+    }
+
+    private static Digraph createOneNodeDigraph() {
+        Digraph di = new Digraph(1);
+        di.addEdge(0, 0);
+        return di;
+    }
+
+    private static Digraph createTreeLikeDigraph() {
+        Digraph di = new Digraph(25);
+        di.addEdge(1, 0);
+        di.addEdge(2, 0);
+        di.addEdge(3, 1);
+        di.addEdge(4, 1);
+        di.addEdge(7, 3);
+        di.addEdge(8, 3);
+        di.addEdge(9, 3);
+        di.addEdge(13, 7);
+        di.addEdge(14, 7);
+        di.addEdge(15, 9);
+        di.addEdge(16, 9);
+        di.addEdge(21, 16);
+        di.addEdge(22, 16);
+        di.addEdge(5, 2);
+        di.addEdge(6, 2);
+        di.addEdge(10, 5);
+        di.addEdge(11, 5);
+        di.addEdge(12, 5);
+        di.addEdge(17, 10);
+        di.addEdge(18, 10);
+        di.addEdge(19, 12);
+        di.addEdge(20, 12);
+        di.addEdge(23, 20);
+        di.addEdge(24, 20);
+        return di;
+    }
+
+    private static Iterable<Integer> asIterable(int[] array) {
+        return () -> Arrays.stream(array).iterator();
     }
 }
