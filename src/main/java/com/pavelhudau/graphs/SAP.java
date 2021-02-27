@@ -25,7 +25,7 @@ public class SAP {
      * @param G digraph
      */
     public SAP(Digraph G) {
-        this.digraph = G;
+        this.digraph = new Digraph(G);
     }
 
     /**
@@ -100,7 +100,10 @@ public class SAP {
         this.validateVertices(ws);
         HashSet<Integer> newVs = toHashSet(vs);
         HashSet<Integer> newWs = toHashSet(ws);
-        if (!newWs.equals(this.lastVs) || !newWs.equals(this.lastWs)) {
+        boolean previouslyCalculated =
+                newVs.equals(this.lastVs) && newWs.equals(this.lastWs) ||
+                newVs.equals(this.lastWs) && newWs.equals(this.lastVs);
+        if (!previouslyCalculated) {
             BfsForVertex vBfs = new BfsForVertex(this.digraph, newVs);
             BfsForVertex wBfs = new BfsForVertex(this.digraph, newWs);
             this.findCommonAncestor(vBfs, wBfs);

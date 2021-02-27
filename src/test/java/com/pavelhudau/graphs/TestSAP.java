@@ -118,6 +118,8 @@ public class TestSAP {
         assertEquals(4, sap.length(asIterable(new int[]{13, 14}), asIterable(new int[]{22, 16})));
         assertEquals(3, sap.length(asIterable(new int[]{13, 5}), asIterable(new int[]{4, 24})));
         assertEquals(4, sap.length(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
+        assertEquals(-1, sap.length(asIterable(new int[]{13, 14}), asIterable(new int[0])));
+        assertEquals(-1, sap.length(asIterable(new int[0]), asIterable(new int[]{22, 16})));
     }
 
     @Test
@@ -134,6 +136,8 @@ public class TestSAP {
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[]{22, 16})));
         assertEquals(5, sap.ancestor(asIterable(new int[]{13, 5}), asIterable(new int[]{4, 24})));
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
+        assertEquals(-1, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[0])));
+        assertEquals(-1, sap.ancestor(asIterable(new int[0]), asIterable(new int[]{22, 16})));
     }
 
     @Test
