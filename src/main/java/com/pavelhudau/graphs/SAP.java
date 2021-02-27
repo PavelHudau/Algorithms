@@ -2,10 +2,11 @@ package com.pavelhudau.graphs;
 
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.SET;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Shortest ancestral path.
@@ -15,8 +16,8 @@ public class SAP {
     private final Digraph digraph;
     private int lastShortestDistance;
     private int lastClosestAncestor;
-    private SET<Integer> lastVs = new SET<>();
-    private SET<Integer> lastWs = new SET<>();
+    private Set<Integer> lastVs = new HashSet<>();
+    private Set<Integer> lastWs = new HashSet<>();
 
     /**
      * Constructor takes a digraph (not necessarily a DAG)
@@ -76,7 +77,10 @@ public class SAP {
         return this.lastClosestAncestor;
     }
 
-    private void validateVertex(int v) {
+    private void validateVertex(Integer v) {
+        if (v == null) {
+            throw new IllegalArgumentException("Vertex can not be null");
+        }
         if (v < 0 || v >= this.digraph.V()) {
             throw new IllegalArgumentException("v must be between 0 and " + this.digraph.V() + " but is " + v);
         }
@@ -94,8 +98,8 @@ public class SAP {
     private void runBfsForVertices(Iterable<Integer> vs, Iterable<Integer> ws) {
         this.validateVertices(vs);
         this.validateVertices(ws);
-        SET<Integer> newVs = toSet(vs);
-        SET<Integer> newWs = toSet(ws);
+        HashSet<Integer> newVs = toHashSet(vs);
+        HashSet<Integer> newWs = toHashSet(ws);
         if (!newWs.equals(this.lastVs) || !newWs.equals(this.lastWs)) {
             BfsForVertex vBfs = new BfsForVertex(this.digraph, newVs);
             BfsForVertex wBfs = new BfsForVertex(this.digraph, newWs);
@@ -108,19 +112,19 @@ public class SAP {
     private void findCommonAncestor(BfsForVertex vBfs, BfsForVertex wBfs) {
         this.lastShortestDistance = NOT_FOUND;
         this.lastClosestAncestor = NOT_FOUND;
-        for (int v = 0; v < vBfs.distanceTo.length; v++) {
-            if (vBfs.isMarked(v) && wBfs.isMarked(v)) {
-                int distance = vBfs.distanceTo[v] + wBfs.distanceTo[v];
+        for (int i = 0; i < vBfs.distanceTo.length; i++) {
+            if (vBfs.isMarked(i) && wBfs.isMarked(i)) {
+                int distance = vBfs.distanceTo[i] + wBfs.distanceTo[i];
                 if (this.lastShortestDistance == NOT_FOUND || this.lastShortestDistance > distance) {
-                    this.lastClosestAncestor = v;
+                    this.lastClosestAncestor = i;
                     this.lastShortestDistance = distance;
                 }
             }
         }
     }
 
-    private static SET<Integer> toSet(Iterable<Integer> iterable) {
-        SET<Integer> set = new SET<>();
+    private static HashSet<Integer> toHashSet(Iterable<Integer> iterable) {
+        HashSet<Integer> set = new HashSet<>();
         for (int it : iterable) {
             set.add(it);
         }
@@ -129,7 +133,7 @@ public class SAP {
     }
 
     private static class BfsForVertex {
-        public final static int NOT_MARKED = -1;
+        public static final int NOT_MARKED = -1;
         private final Digraph digraph;
         private final int[] distanceTo;
 

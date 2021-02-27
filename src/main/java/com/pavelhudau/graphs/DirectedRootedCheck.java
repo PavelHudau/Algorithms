@@ -16,12 +16,18 @@ public class DirectedRootedCheck {
 
     public DirectedRootedCheck(Digraph digraph) {
         this.digraph = digraph;
+        this.rooted = this.calculateIsRooted();
+    }
 
+    public boolean isRooted() {
+        return this.rooted;
+    }
+
+    private boolean calculateIsRooted() {
         int root = this.findRootCandidate();
         if (root == NO_ROOT) {
             // If there is no root, then graph is not rooted.
-            this.rooted = false;
-            return;
+            return false;
         }
 
         this.digraphReverse = this.digraph.reverse();
@@ -31,18 +37,15 @@ public class DirectedRootedCheck {
         this.dfsOnReversedDigraph(root);
         for (boolean isMarked : marked) {
             if (!isMarked) {
-                this.rooted = false;
-                break;
+                return false;
             }
         }
 
         this.marked = null;
         this.digraph = null;
         this.digraphReverse = null;
-    }
 
-    public boolean isRooted() {
-        return this.rooted;
+        return true;
     }
 
     private int findRootCandidate() {
