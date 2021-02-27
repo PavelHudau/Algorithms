@@ -130,6 +130,11 @@ public class TestSAP {
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
     }
 
+    /**
+     * Triangle digraph is taken from https://coursera.cs.princeton.edu/algs4/assignments/wordnet/specification.php.
+     *
+     * @return Triangle digraph.
+     */
     private static Digraph createTriangleDigraph() {
         Digraph di = new Digraph(6);
         di.addEdge(1, 2);
@@ -162,6 +167,11 @@ public class TestSAP {
         return di;
     }
 
+    /**
+     * Tree like digraph is taken from https://coursera.cs.princeton.edu/algs4/assignments/wordnet/specification.php.
+     *
+     * @return Tree like digraph.
+     */
     private static Digraph createTreeLikeDigraph() {
         Digraph di = new Digraph(25);
         di.addEdge(1, 0);
