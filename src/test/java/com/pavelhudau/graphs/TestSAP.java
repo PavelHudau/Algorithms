@@ -121,12 +121,26 @@ public class TestSAP {
     }
 
     @Test
+    void testLengthWithMultiNodesWhenVerticesIsdNullThenThrowsException() {
+        SAP sap = new SAP(createTreeLikeDigraph());
+        assertThrows(IllegalArgumentException.class, () -> sap.length(null, asIterable(new int[]{15, 16})));
+        assertThrows(IllegalArgumentException.class, () -> sap.length(asIterable(new int[]{13, 14}), null));
+    }
+
+    @Test
     void testAncestorWithMultiNodes() {
         SAP sap = new SAP(createTreeLikeDigraph());
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[]{15, 16})));
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 14}), asIterable(new int[]{22, 16})));
         assertEquals(5, sap.ancestor(asIterable(new int[]{13, 5}), asIterable(new int[]{4, 24})));
         assertEquals(3, sap.ancestor(asIterable(new int[]{13, 23, 24}), asIterable(new int[]{6, 16, 17})));
+    }
+
+    @Test
+    void testAncestorWithMultiNodesWhenVerticesIsdNullThenThrowsException() {
+        SAP sap = new SAP(createTreeLikeDigraph());
+        assertThrows(IllegalArgumentException.class, () -> sap.ancestor(null, asIterable(new int[]{15, 16})));
+        assertThrows(IllegalArgumentException.class, () -> sap.ancestor(asIterable(new int[]{13, 14}), null));
     }
 
     /**

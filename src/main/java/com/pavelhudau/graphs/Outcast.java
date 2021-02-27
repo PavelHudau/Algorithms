@@ -1,22 +1,22 @@
 package com.pavelhudau.graphs;
 
 public class Outcast {
-    private WordNet wordNet;
+    private final WordNet wordNet;
 
     /**
-     * Constructor takes a WordNet object
+     * Constructor takes a WordNet object.
      *
-     * @param wordnet
+     * @param wordnet WordNet instance.
      */
     public Outcast(WordNet wordnet) {
         this.wordNet = wordnet;
     }
 
     /**
-     * Given an array of WordNet nouns, return an outcast
+     * Given an array of WordNet nouns, return an outcast.
      *
-     * @param nouns
-     * @return
+     * @param nouns array of nouns.
+     * @return Furthest noun to the rest of nouns.
      */
     public String outcast(String[] nouns) {
         int maxDistance = -1;

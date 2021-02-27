@@ -4,6 +4,7 @@ import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.Queue;
 import edu.princeton.cs.algs4.SET;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 /**
@@ -82,17 +83,20 @@ public class SAP {
     }
 
     private void validateVertices(Iterable<Integer> vs) {
+        if (vs == null) {
+            throw new IllegalArgumentException("Vertices can not be null");
+        }
         for (int v : vs) {
             this.validateVertex(v);
         }
     }
 
     private void runBfsForVertices(Iterable<Integer> vs, Iterable<Integer> ws) {
+        this.validateVertices(vs);
+        this.validateVertices(ws);
         SET<Integer> newVs = toSet(vs);
         SET<Integer> newWs = toSet(ws);
-        if(!newWs.equals(this.lastVs) || !newWs.equals(this.lastWs)) {
-            this.validateVertices(newVs);
-            this.validateVertices(newWs);
+        if (!newWs.equals(this.lastVs) || !newWs.equals(this.lastWs)) {
             BfsForVertex vBfs = new BfsForVertex(this.digraph, newVs);
             BfsForVertex wBfs = new BfsForVertex(this.digraph, newWs);
             this.findCommonAncestor(vBfs, wBfs);
@@ -117,9 +121,10 @@ public class SAP {
 
     private static SET<Integer> toSet(Iterable<Integer> iterable) {
         SET<Integer> set = new SET<>();
-        for(int it : iterable) {
+        for (int it : iterable) {
             set.add(it);
         }
+
         return set;
     }
 
@@ -131,9 +136,7 @@ public class SAP {
         public BfsForVertex(Digraph digraph, Iterable<Integer> startVertices) {
             this.digraph = digraph;
             this.distanceTo = new int[digraph.V()];
-            for (int i = 0; i < this.distanceTo.length; i++) {
-                this.distanceTo[i] = NOT_MARKED;
-            }
+            Arrays.fill(this.distanceTo, NOT_MARKED);
             this.bfs(startVertices);
         }
 

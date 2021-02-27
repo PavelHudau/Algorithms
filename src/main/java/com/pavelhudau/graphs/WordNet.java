@@ -3,13 +3,12 @@ package com.pavelhudau.graphs;
 import edu.princeton.cs.algs4.Digraph;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.ST;
-import edu.princeton.cs.algs4.SET;
 import edu.princeton.cs.algs4.DirectedCycle;
 
+import java.util.HashSet;
 
 public class WordNet {
-    private final Digraph digraph;
-    private final ST<String, SET<Integer>> nounsToSynsetKeyMap;
+    private final ST<String, HashSet<Integer>> nounsToSynsetKeyMap;
     private final ST<Integer, String> synsetToNounsKeyMap;
     private final SAP sap;
     private int verticesCount = 0;
@@ -17,7 +16,7 @@ public class WordNet {
     /**
      * Constructor.
      *
-     * @param synsets synsets input file name.
+     * @param synsets   synsets input file name.
      * @param hypernyms hypernyms input file name.
      */
     public WordNet(String synsets, String hypernyms) {
@@ -31,17 +30,17 @@ public class WordNet {
         this.synsetToNounsKeyMap = new ST<>();
         this.nounsToSynsetKeyMap = new ST<>();
         this.loadSynsets(synsets);
-        this.digraph = this.buildDigraph(hypernyms);
+        Digraph digraph = this.buildDigraph(hypernyms);
 
-        if(hasCycle(this.digraph)) {
+        if (hasCycle(digraph)) {
             throw new IllegalArgumentException("digraph has cycle");
         }
 
-        if (!isRooted(this.digraph)) {
+        if (!isRooted(digraph)) {
             throw new IllegalArgumentException("digraph is not rooted");
         }
 
-        sap = new SAP(this.digraph);
+        sap = new SAP(digraph);
     }
 
     /**
@@ -63,6 +62,7 @@ public class WordNet {
         if (word == null) {
             throw new IllegalArgumentException("word can not be null");
         }
+
         return this.nounsToSynsetKeyMap.contains(word);
     }
 
@@ -106,11 +106,12 @@ public class WordNet {
                     String synsetNouns = split[1];
                     maxSynsetKey = Math.max(maxSynsetKey, synsetKey);
                     for (String noun : synsetNouns.split(" ")) {
-                        SET<Integer> synsets = this.nounsToSynsetKeyMap.get(noun);
-                        if(synsets == null) {
-                            synsets = new SET<>();
+                        HashSet<Integer> synsets = this.nounsToSynsetKeyMap.get(noun);
+                        if (synsets == null) {
+                            synsets = new HashSet<>();
                             this.nounsToSynsetKeyMap.put(noun, synsets);
                         }
+
                         synsets.add(synsetKey);
                     }
 
@@ -118,6 +119,7 @@ public class WordNet {
                 }
             }
         }
+
         this.verticesCount = maxSynsetKey + 1;
     }
 
@@ -137,6 +139,7 @@ public class WordNet {
                 }
             }
         }
+
         return digraph;
     }
 
@@ -154,10 +157,12 @@ public class WordNet {
         if (noun == null) {
             throw new IllegalArgumentException("noun can not be null");
         }
-        SET<Integer> synsets= this.nounsToSynsetKeyMap.get(noun);
+
+        HashSet<Integer> synsets = this.nounsToSynsetKeyMap.get(noun);
         if (synsets == null) {
             throw new IllegalArgumentException(noun + " is not a noun.");
         }
+
         return synsets;
     }
 }
