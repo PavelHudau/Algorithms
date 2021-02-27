@@ -9,9 +9,9 @@ import edu.princeton.cs.algs4.Digraph;
  */
 public class DirectedRootedCheck {
     private static final int NO_ROOT = -1;
+    private final boolean rooted;
     private Digraph digraph;
     private Digraph digraphReverse;
-    private boolean rooted = true;
     private boolean[] marked;
 
     public DirectedRootedCheck(Digraph digraph) {
