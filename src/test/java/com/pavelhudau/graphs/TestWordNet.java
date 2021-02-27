@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWordNet {
-    private WordNet wn;
+    private static WordNet wn;
 
     @Test
     void testNouns() {
@@ -38,11 +38,6 @@ public class TestWordNet {
     }
 
     private WordNet getWordNet() {
-        if (this.wn == null) {
-            String synsetsFilePath = "src/main/resources/synsets.txt";
-            String hypernymsFilePath = "src/main/resources/hypernyms.txt";
-            this.wn = new WordNet(synsetsFilePath, hypernymsFilePath);
-        }
-        return this.wn;
+        return WordNetSingleton.getInstance().getWordNet();
     }
 }

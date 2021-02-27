@@ -3,10 +3,9 @@ package com.pavelhudau.graphs;
 import edu.princeton.cs.algs4.Digraph;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestSAP {
     @Test
