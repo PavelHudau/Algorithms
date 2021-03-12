@@ -19,19 +19,26 @@ class TopologicalShortestVerticalPath {
     public int[] findShortestPath() {
         this.reset();
 
-        for (int y = 0; y < this.height - 1; y++) {
-            for (int x = 0; x < this.width; x++) {
-                this.relaxVertex(x, y);
+        int[] shortestPath = new int[this.height];
+        if(this.height > 1) {
+            for (int y = 0; y < this.height - 1; y++) {
+                for (int x = 0; x < this.width; x++) {
+                    this.relaxVertex(x, y);
+                }
+            }
+
+            // Construct shortest path walking bottom to top by xOfVertexFrom starting from X
+            // with shortest distance.
+            shortestPath[this.height - 1] = this.findMinPathEndX();
+            for (int y = this.height - 1; y >= 1; y--) {
+                int x = shortestPath[y];
+                shortestPath[y - 1] = this.xOfVertexFrom[x][y];
             }
         }
-
-        // Construct shortest path walking bottom to top by xOfVertexFrom starting from X
-        // with shortest distance.
-        int[] shortestPath = new int[this.height];
-        shortestPath[this.height - 1] = this.findMinPathEndX();
-        for (int y = this.height - 1; y >= 1; y--) {
-            int x = shortestPath[y];
-            shortestPath[y - 1] = this.xOfVertexFrom[x][y];
+        else {
+            for (int y = 0; y < this.height; y++) {
+                shortestPath[y] = y;
+            }
         }
 
         return shortestPath;

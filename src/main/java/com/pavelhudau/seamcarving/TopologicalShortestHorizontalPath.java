@@ -19,21 +19,30 @@ class TopologicalShortestHorizontalPath {
     public int[] findShortestPath() {
         this.reset();
 
-        for (int x = 0; x < this.width - 1; x++) {
-            for (int y = 0; y < this.height; y++) {
-                this.relaxVertex(x, y);
+        int[] shortestPath = new int[this.width];
+
+        if(this.height > 1) {
+            for (int x = 0; x < this.width - 1; x++) {
+                for (int y = 0; y < this.height; y++) {
+                    this.relaxVertex(x, y);
+                }
+            }
+
+            // Construct shortest path walking right to left by yOfHorizontalFrom Y
+            // with shortest distance.
+
+            shortestPath[this.width - 1] = this.findMinPathEndY();
+            for (int x = this.width - 1; x >= 1; x--) {
+                int y = shortestPath[x];
+                shortestPath[x - 1] = this.yOfHorizontalFrom[x][y];
             }
         }
+        else {
+            for (int x = 0; x < this.width; x++) {
+                shortestPath[x] = x;
+            }
 
-        // Construct shortest path walking right to left by yOfHorizontalFrom Y
-        // with shortest distance.
-        int[] shortestPath = new int[this.width];
-        shortestPath[this.width - 1] = this.findMinPathEndY();
-        for (int x = this.width - 1; x >= 1; x--) {
-            int y = shortestPath[x];
-            shortestPath[x - 1] = this.yOfHorizontalFrom[x][y];
         }
-
         return shortestPath;
     }
 
