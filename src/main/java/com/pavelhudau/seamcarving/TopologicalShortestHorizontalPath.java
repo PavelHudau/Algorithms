@@ -1,7 +1,7 @@
 package com.pavelhudau.seamcarving;
 
-public class TopologicalShortestHorizontalPath {
-    private final static int NOT_VISITED = -1;
+class TopologicalShortestHorizontalPath {
+    private static final int NOT_VISITED = -1;
     private final double[][] distanceTo;
     private final int[][] yOfHorizontalFrom;
     private final double[][] energies;
@@ -61,9 +61,7 @@ public class TopologicalShortestHorizontalPath {
     }
 
     private void reset() {
-        if (this.height >= 0) {
-            System.arraycopy(this.energies[0], 0, this.distanceTo[0], 0, this.height);
-        }
+        System.arraycopy(this.energies[0], 0, this.distanceTo[0], 0, this.height);
 
         for (int x = 1; x < this.width; x++) {
             for (int y = 0; y < this.height; y++) {

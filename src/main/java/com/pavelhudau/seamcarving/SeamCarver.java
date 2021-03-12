@@ -2,14 +2,10 @@ package com.pavelhudau.seamcarving;
 
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
-
 public class SeamCarver {
-    private final static double BORDER_ENERGY = 1000;
+    private static final double BORDER_ENERGY = 1000;
     private Picture picture;
     private double[][] energies;
-    private int[] horizontalSeam;
-    private int[] verticalSeam;
 
     /**
      * Create a seam carver object based on the given picture.
@@ -71,8 +67,8 @@ public class SeamCarver {
             return BORDER_ENERGY;
         }
 
-        double deltaX = getDeltaSquared(this.picture.get(x - 1, y), this.picture.get(x + 1, y));
-        double deltaY = getDeltaSquared(this.picture.get(x, y - 1), this.picture.get(x, y + 1));
+        double deltaX = getDeltaSquared(this.picture.getRGB(x - 1, y), this.picture.getRGB(x + 1, y));
+        double deltaY = getDeltaSquared(this.picture.getRGB(x, y - 1), this.picture.getRGB(x, y + 1));
         return Math.sqrt(deltaX + deltaY);
     }
 
@@ -82,12 +78,8 @@ public class SeamCarver {
      * @return sequence of indices for horizontal seam.
      */
     public int[] findHorizontalSeam() {
-        if (this.horizontalSeam == null) {
-            TopologicalShortestHorizontalPath pathFinder = new TopologicalShortestHorizontalPath(this.getEnergies());
-            this.horizontalSeam = pathFinder.findShortestPath();
-        }
-
-        return this.horizontalSeam;
+        TopologicalShortestHorizontalPath pathFinder = new TopologicalShortestHorizontalPath(this.getEnergies());
+        return pathFinder.findShortestPath();
     }
 
     /**
@@ -96,12 +88,8 @@ public class SeamCarver {
      * @return sequence of indices for vertical seam.
      */
     public int[] findVerticalSeam() {
-        if (this.verticalSeam == null) {
-            TopologicalShortestVerticalPath pathFinder = new TopologicalShortestVerticalPath(this.getEnergies());
-            this.verticalSeam = pathFinder.findShortestPath();
-        }
-
-        return this.verticalSeam;
+        TopologicalShortestVerticalPath pathFinder = new TopologicalShortestVerticalPath(this.getEnergies());
+        return pathFinder.findShortestPath();
     }
 
     /**
@@ -120,14 +108,13 @@ public class SeamCarver {
             throw new IllegalArgumentException("Picture is too small to remove seam.");
         }
 
-        int[] horizontalSeam = this.findHorizontalSeam();
         Picture newPicture = new Picture(this.width(), this.height() - 1);
         for (int x = 0; x < this.width(); x++) {
-            for (int y = 0; y < horizontalSeam[x]; y++) {
-                newPicture.set(x, y, this.picture.get(x, y));
+            for (int y = 0; y < seam[x]; y++) {
+                newPicture.setRGB(x, y, this.picture.getRGB(x, y));
             }
-            for (int y = horizontalSeam[x] + 1; y < this.height(); y++) {
-                newPicture.set(x, y - 1, this.picture.get(x, y));
+            for (int y = seam[x] + 1; y < this.height(); y++) {
+                newPicture.setRGB(x, y - 1, this.picture.getRGB(x, y));
             }
         }
 
@@ -149,14 +136,14 @@ public class SeamCarver {
         if (this.width() < 2) {
             throw new IllegalArgumentException("Picture is too small to remove seam.");
         }
-        int[] verticalSeam = this.findVerticalSeam();
+
         Picture newPicture = new Picture(this.width() - 1, this.height());
         for (int y = 0; y < this.height(); y++) {
-            for (int x = 0; x < verticalSeam[y]; x++) {
-                newPicture.set(x, y, this.picture.get(x, y));
+            for (int x = 0; x < seam[y]; x++) {
+                newPicture.setRGB(x, y, this.picture.getRGB(x, y));
             }
-            for (int x = verticalSeam[y] + 1; x < this.width(); x++) {
-                newPicture.set(x - 1, y, this.picture.get(x, y));
+            for (int x = seam[y] + 1; x < this.width(); x++) {
+                newPicture.setRGB(x - 1, y, this.picture.getRGB(x, y));
             }
         }
 
@@ -176,16 +163,20 @@ public class SeamCarver {
         return this.energies;
     }
 
-    private static double getDeltaSquared(Color pixelA, Color pixelB) {
-        return Math.pow(pixelA.getRed() - pixelB.getRed(), 2) +
-                Math.pow(pixelA.getGreen() - pixelB.getGreen(), 2) +
-                Math.pow(pixelA.getBlue() - pixelB.getBlue(), 2);
+    private static double getDeltaSquared(int rgbA, int rgbB) {
+        int aRed = (rgbA >> 16) & 0xFF;
+        int aGreen = (rgbA >> 8) & 0xFF;
+        int aBlue = (rgbA) & 0xFF;
+        int bRed = (rgbB >> 16) & 0xFF;
+        int bGreen = (rgbB >> 8) & 0xFF;
+        int bBlue = (rgbB) & 0xFF;
+        return Math.pow(aRed - bRed, 2) +
+                Math.pow(aGreen - bGreen, 2) +
+                Math.pow(aBlue - bBlue, 2);
     }
 
     private void setNewPicture(Picture newPicture) {
         this.energies = null;
-        this.horizontalSeam = null;
-        this.verticalSeam = null;
         this.picture = newPicture;
     }
 }

@@ -1,7 +1,7 @@
 package com.pavelhudau.seamcarving;
 
-public class TopologicalShortestVerticalPath {
-    private final static int NOT_VISITED = -1;
+class TopologicalShortestVerticalPath {
+    private static final int NOT_VISITED = -1;
     private final double[][] distanceTo;
     private final int[][] xOfVertexFrom;
     private final double[][] energies;
