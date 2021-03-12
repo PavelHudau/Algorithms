@@ -20,7 +20,7 @@ class TopologicalShortestVerticalPath {
         this.reset();
 
         int[] shortestPath = new int[this.height];
-        if(this.height > 1) {
+        if(this.width > 1) {
             for (int y = 0; y < this.height - 1; y++) {
                 for (int x = 0; x < this.width; x++) {
                     this.relaxVertex(x, y);
