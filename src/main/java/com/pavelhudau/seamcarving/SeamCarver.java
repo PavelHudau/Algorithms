@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class SeamCarver {
     private final static double BORDER_ENERGY = 1000;
-    private final Picture picture;
+    private Picture picture;
     private double[][] energies;
     private int[] horizontalSeam;
     private int[] verticalSeam;
@@ -113,7 +113,7 @@ public class SeamCarver {
         if (seam == null) {
             throw new IllegalArgumentException("seam can not be null.");
         }
-        if (seam.length != this.height()) {
+        if (seam.length != this.width()) {
             throw new IllegalArgumentException("Invalid seam size");
         }
         if (this.height() < 2) {
@@ -121,8 +121,17 @@ public class SeamCarver {
         }
 
         int[] horizontalSeam = this.findHorizontalSeam();
-        // TODO: remove seam;
-        this.reset();
+        Picture newPicture = new Picture(this.width(), this.height() - 1);
+        for (int x = 0; x < this.width(); x++) {
+            for (int y = 0; y < horizontalSeam[x]; y++) {
+                newPicture.set(x, y, this.picture.get(x, y));
+            }
+            for (int y = horizontalSeam[x] + 1; y < this.height(); y++) {
+                newPicture.set(x, y - 1, this.picture.get(x, y));
+            }
+        }
+
+        this.setNewPicture(newPicture);
     }
 
     /**
@@ -134,15 +143,24 @@ public class SeamCarver {
         if (seam == null) {
             throw new IllegalArgumentException("seam can not be null.");
         }
-        if (seam.length != this.width()) {
+        if (seam.length != this.height()) {
             throw new IllegalArgumentException("Invalid seam size");
         }
         if (this.width() < 2) {
             throw new IllegalArgumentException("Picture is too small to remove seam.");
         }
         int[] verticalSeam = this.findVerticalSeam();
-        // TODO: remove seam;
-        this.reset();
+        Picture newPicture = new Picture(this.width() - 1, this.height());
+        for (int y = 0; y < this.height(); y++) {
+            for (int x = 0; x < verticalSeam[y]; x++) {
+                newPicture.set(x, y, this.picture.get(x, y));
+            }
+            for (int x = verticalSeam[y] + 1; x < this.width(); x++) {
+                newPicture.set(x - 1, y, this.picture.get(x, y));
+            }
+        }
+
+        this.setNewPicture(newPicture);
     }
 
     private double[][] getEnergies() {
@@ -164,9 +182,10 @@ public class SeamCarver {
                 Math.pow(pixelA.getBlue() - pixelB.getBlue(), 2);
     }
 
-    private void reset() {
+    private void setNewPicture(Picture newPicture) {
         this.energies = null;
         this.horizontalSeam = null;
         this.verticalSeam = null;
+        this.picture = newPicture;
     }
 }

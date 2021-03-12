@@ -108,7 +108,7 @@ public class TestSeamCarver {
     void testFindHorizontalSeam() {
         // GIVEN
         SeamCarver carver = new SeamCarver(getPicture6x5());
-        int[] expectedHorizontalSeam = new int[]{1, 2, 1, 2, 1, 0 };
+        int[] expectedHorizontalSeam = new int[]{1, 2, 1, 2, 1, 0};
 
         // WHEN
         int[] horizontalSeam = carver.findHorizontalSeam();
@@ -131,6 +131,44 @@ public class TestSeamCarver {
 
         // THEN
         assertEquals(surfersPic.width(), verticalSeam.length);
+    }
+
+    @Test
+    void testRemoveVerticalSeam() {
+        // GIVEN
+        Picture surfersPic = getSurfersPic();
+        SeamCarver carver = new SeamCarver(surfersPic);
+
+        // WHEN
+        int seamsToRemove = 100;
+        for (int i = 0; i < seamsToRemove; i++) {
+            carver.removeVerticalSeam(carver.findVerticalSeam());
+        }
+
+        //carver.picture().save("src/main/resources/HJoceanSmall_v_seam.png");
+
+        // THEN
+        assertEquals(surfersPic.width() - seamsToRemove, carver.width());
+        assertEquals(surfersPic.height(), carver.height());
+    }
+
+    @Test
+    void testRemoveHorizontalSeam() {
+        // GIVEN
+        Picture surfersPic = getSurfersPic();
+        SeamCarver carver = new SeamCarver(surfersPic);
+
+        // WHEN
+        int seamsToRemove = 50;
+        for (int i = 0; i < seamsToRemove; i++) {
+            carver.removeHorizontalSeam(carver.findHorizontalSeam());
+        }
+
+        //carver.picture().save("src/main/resources/HJoceanSmall_h_seam.png");
+
+        // THEN
+        assertEquals(surfersPic.height() - seamsToRemove, carver.height());
+        assertEquals(surfersPic.width(), carver.width());
     }
 
     private static Picture getPicture3x4() {
@@ -164,7 +202,7 @@ public class TestSeamCarver {
     }
 
     private static Picture getSurfersPic() {
-        if(surfersPic == null) {
+        if (surfersPic == null) {
             surfersPic = new Picture("src/main/resources/HJoceanSmall.png");
         }
         return surfersPic;
