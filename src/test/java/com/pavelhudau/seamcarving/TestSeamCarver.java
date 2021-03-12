@@ -16,9 +16,7 @@ public class TestSeamCarver {
 
     @Test
     void testConstructorWhenPictureIsNullTHenException() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            new SeamCarver(null);
-        });
+        assertThrows(IllegalArgumentException.class, () -> new SeamCarver(null));
     }
 
     @Test
@@ -65,18 +63,16 @@ public class TestSeamCarver {
 
     @ParameterizedTest
     @CsvSource({
+            "-1, -1",
             "-1, 2",
             "2, -1",
-            "-1, -1",
             "2, 5",
             "5, 2",
             "5, 5"
     })
     void testEnergyWhenXOrYAreOutsideOrBoundaries(int x, int y) {
         SeamCarver carver = new SeamCarver(getPicture3x4());
-        assertThrows(IllegalArgumentException.class, () -> {
-            carver.energy(x, y);
-        });
+        assertThrows(IllegalArgumentException.class, () -> carver.energy(x, y));
     }
 
     @Test
@@ -92,7 +88,6 @@ public class TestSeamCarver {
         assertEquals(expectedVerticalSeam.length, verticalSeam.length);
         for (int i = 0; i < expectedVerticalSeam.length; i++) {
             assertEquals(expectedVerticalSeam[i], verticalSeam[i]);
-
         }
     }
 
@@ -107,6 +102,35 @@ public class TestSeamCarver {
 
         // THEN
         assertEquals(surfersPic.height(), verticalSeam.length);
+    }
+
+    @Test
+    void testFindHorizontalSeam() {
+        // GIVEN
+        SeamCarver carver = new SeamCarver(getPicture6x5());
+        int[] expectedHorizontalSeam = new int[]{1, 2, 1, 2, 1, 0 };
+
+        // WHEN
+        int[] horizontalSeam = carver.findHorizontalSeam();
+
+        // THEN
+        assertEquals(expectedHorizontalSeam.length, horizontalSeam.length);
+        for (int i = 0; i < expectedHorizontalSeam.length; i++) {
+            assertEquals(expectedHorizontalSeam[i], horizontalSeam[i]);
+        }
+    }
+
+    @Test
+    void testFindHorizontalSeamOnALargerPicture() {
+        // GIVEN
+        Picture surfersPic = getSurfersPic();
+        SeamCarver carver = new SeamCarver(surfersPic);
+
+        // WHEN
+        int[] verticalSeam = carver.findHorizontalSeam();
+
+        // THEN
+        assertEquals(surfersPic.width(), verticalSeam.length);
     }
 
     private static Picture getPicture3x4() {

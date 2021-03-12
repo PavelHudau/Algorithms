@@ -2,38 +2,34 @@ package com.pavelhudau.seamcarving;
 
 public class TopologicalShortestVerticalPath {
     private final static int NOT_VISITED = -1;
-    private final SeamCarver seamCarver;
     private final double[][] distanceTo;
     private final int[][] xOfVertexFrom;
     private final double[][] energies;
+    private final int width;
+    private final int height;
 
-    public TopologicalShortestVerticalPath(SeamCarver seamCarver) {
-        this.seamCarver = seamCarver;
-        this.distanceTo = new double[this.seamCarver.width()][this.seamCarver.height()];
-        this.xOfVertexFrom = new int[this.seamCarver.width()][this.seamCarver.height()];
-        this.energies = new double[this.seamCarver.width()][this.seamCarver.height()];
-
-        for (int x = 0; x < this.distanceTo.length; x++) {
-            for (int y = 0; y < this.distanceTo[x].length; y++) {
-                this.energies[x][y] = this.seamCarver.energy(x, y);
-            }
-        }
+    public TopologicalShortestVerticalPath(double[][] energies) {
+        this.energies = energies;
+        this.width = this.energies.length;
+        this.height = this.energies[0].length;
+        this.distanceTo = new double[energies.length][energies[0].length];
+        this.xOfVertexFrom = new int[energies.length][energies[0].length];
     }
 
     public int[] findShortestPath() {
         this.reset();
 
-        for (int y = 0; y < this.distanceTo[0].length - 1; y++) {
-            for (int x = 0; x < this.distanceTo.length; x++) {
+        for (int y = 0; y < this.height - 1; y++) {
+            for (int x = 0; x < this.width; x++) {
                 this.relaxVertex(x, y);
             }
         }
 
-        // Construct shortest path by walking back xOfVertexFrom starting from X
-        // which distance is shortest.
-        int[] shortestPath = new int[this.xOfVertexFrom[0].length];
-        shortestPath[this.xOfVertexFrom[0].length - 1] = this.findMinPathEndX();
-        for (int y = shortestPath.length - 1; y >= 1; y--) {
+        // Construct shortest path walking bottom to top by xOfVertexFrom starting from X
+        // with shortest distance.
+        int[] shortestPath = new int[this.height];
+        shortestPath[this.height - 1] = this.findMinPathEndX();
+        for (int y = this.height - 1; y >= 1; y--) {
             int x = shortestPath[y];
             shortestPath[y - 1] = this.xOfVertexFrom[x][y];
         }
@@ -43,11 +39,10 @@ public class TopologicalShortestVerticalPath {
 
     private void relaxVertex(int x, int y) {
         int[] adjuscentXs;
-        if (x == 0){
+        if (x == 0) {
             // left
             adjuscentXs = new int[]{x, x + 1};
-        }
-        else if (x == this.distanceTo.length - 1) {
+        } else if (x == this.width - 1) {
             // right
             adjuscentXs = new int[]{x, x - 1};
         } else {
@@ -66,11 +61,12 @@ public class TopologicalShortestVerticalPath {
     }
 
     private void reset() {
-        for (int x = 0; x < this.distanceTo.length; x++) {
-            this.distanceTo[x][0] = this.seamCarver.energy(x, 0);
+        for (int x = 0; x < this.width; x++) {
+            this.distanceTo[x][0] = this.energies[x][0];
         }
-        for (int x = 0; x < this.distanceTo.length; x++) {
-            for (int y = 1; y < this.distanceTo[x].length; y++) {
+
+        for (int x = 0; x < this.width; x++) {
+            for (int y = 1; y < this.height; y++) {
                 this.distanceTo[x][y] = Double.POSITIVE_INFINITY;
                 this.xOfVertexFrom[x][y] = NOT_VISITED;
             }
@@ -79,8 +75,8 @@ public class TopologicalShortestVerticalPath {
 
     private int findMinPathEndX() {
         int minPathEndX = 0;
-        int bottomRowY = this.distanceTo[0].length - 1;
-        for (int x = 1; x < this.distanceTo.length; x++) {
+        int bottomRowY = this.height - 1;
+        for (int x = 1; x < this.width; x++) {
             if (Double.compare(this.distanceTo[minPathEndX][bottomRowY], this.distanceTo[x][bottomRowY]) > 0) {
                 minPathEndX = x;
             }
