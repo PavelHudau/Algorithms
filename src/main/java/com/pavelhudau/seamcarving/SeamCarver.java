@@ -27,7 +27,7 @@ public class SeamCarver {
      * @return current picture.
      */
     public Picture picture() {
-        return this.picture;
+        return new Picture(this.picture);
     }
 
     /**
@@ -107,6 +107,14 @@ public class SeamCarver {
         if (this.height() < 2) {
             throw new IllegalArgumentException("Picture is too small to remove seam.");
         }
+        for (int i = 1; i < seam.length; i++) {
+            int diff = seam[i] - seam[i-1];
+            if(diff < -1 || diff > 1) {
+                throw new IllegalArgumentException(
+                        "Successive entries in seam[] must differ by -1, 0, or +1." +
+                                " but " + i + "-th and " + (i - 1) +"-th are different by" + diff);
+            }
+        }
 
         Picture newPicture = new Picture(this.width(), this.height() - 1);
         for (int x = 0; x < this.width(); x++) {
@@ -135,6 +143,14 @@ public class SeamCarver {
         }
         if (this.width() < 2) {
             throw new IllegalArgumentException("Picture is too small to remove seam.");
+        }
+        for (int i = 1; i < seam.length; i++) {
+            int diff = seam[i] - seam[i-1];
+            if(diff < -1 || diff > 1) {
+                throw new IllegalArgumentException(
+                        "Successive entries in seam[] must differ by -1, 0, or +1." +
+                                " but " + i + "-th and " + (i - 1) +"-th are different by" + diff);
+            }
         }
 
         Picture newPicture = new Picture(this.width() - 1, this.height());

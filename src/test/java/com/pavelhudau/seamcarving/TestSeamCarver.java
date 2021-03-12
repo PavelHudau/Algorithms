@@ -152,6 +152,25 @@ public class TestSeamCarver {
         assertEquals(surfersPic.height(), carver.height());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "3, 1",
+            "1, 3",
+    })
+    void testRemoveVerticalSeamWhenSeamHasInvalidCoordinates(int invalidA, int invalidB) {
+        SeamCarver carver = new SeamCarver(getPicture6x5());
+
+        final int[] invalidSeamFront = carver.findVerticalSeam();
+        invalidSeamFront[0] = invalidA;
+        invalidSeamFront[1] = invalidB;
+        assertThrows(IllegalArgumentException.class, () -> carver.removeVerticalSeam(invalidSeamFront));
+
+        int[] invalidSeamBack = carver.findVerticalSeam();
+        invalidSeamBack[invalidSeamBack.length-2] = invalidA;
+        invalidSeamBack[invalidSeamBack.length-1] = invalidB;
+        assertThrows(IllegalArgumentException.class, () -> carver.removeVerticalSeam(invalidSeamBack));
+    }
+
     @Test
     void testRemoveHorizontalSeam() {
         // GIVEN
@@ -169,6 +188,25 @@ public class TestSeamCarver {
         // THEN
         assertEquals(surfersPic.height() - seamsToRemove, carver.height());
         assertEquals(surfersPic.width(), carver.width());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "3, 1",
+            "1, 3",
+    })
+    void testRemoveHorizontalSeamWhenSeamHasInvalidCoordinates(int invalidA, int invalidB) {
+        SeamCarver carver = new SeamCarver(getPicture6x5());
+
+        final int[] invalidSeamFront = carver.findHorizontalSeam();
+        invalidSeamFront[0] = invalidA;
+        invalidSeamFront[1] = invalidB;
+        assertThrows(IllegalArgumentException.class, () -> carver.removeHorizontalSeam(invalidSeamFront));
+
+        int[] invalidSeamBack = carver.findHorizontalSeam();
+        invalidSeamBack[invalidSeamBack.length-2] = invalidA;
+        invalidSeamBack[invalidSeamBack.length-1] = invalidB;
+        assertThrows(IllegalArgumentException.class, () -> carver.removeHorizontalSeam(invalidSeamBack));
     }
 
     private static Picture getPicture3x4() {
