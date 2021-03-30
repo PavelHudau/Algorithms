@@ -166,4 +166,16 @@ public class TestBaseballElimination {
         assertThrows(IllegalArgumentException.class, () -> bm.against("Philadelphia", null));
         assertThrows(IllegalArgumentException.class, () -> bm.against(null, "Philadelphia"));
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Atlanta , false",
+            "Philadelphia,false",
+            "New_York, false",
+            "Montreal, true",
+    })
+    void testIsEliminated(String team, boolean expectedIsEliminates) {
+        BaseballElimination bm = new BaseballElimination(fileFourTeams);
+        assertEquals(expectedIsEliminates, bm.isEliminated(team));
+    }
 }

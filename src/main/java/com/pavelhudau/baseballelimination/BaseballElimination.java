@@ -1,15 +1,17 @@
 package com.pavelhudau.baseballelimination;
 
+import edu.princeton.cs.algs4.FlowEdge;
+import edu.princeton.cs.algs4.FlowNetwork;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.ST;
 
 public class BaseballElimination {
-    private int numOfTeams;
-    private ST<String, Integer> teamsToIdx;
-    private int[] wins;
-    private int[] loss;
-    private int[] left;
-    private int[][] games;
+    private final int numOfTeams;
+    private final ST<String, Integer> teamsToIdx;
+    private final int[] wins;
+    private final int[] loss;
+    private final int[] left;
+    private final int[][] games;
 
     /**
      * Create a baseball division from given filename in format specified below.
@@ -114,9 +116,26 @@ public class BaseballElimination {
         return this.games[this.resolveTeam(team1)][this.resolveTeam(team2)];
     }
 
-//    public boolean isEliminated(String team)              // is given team eliminated?
-//
-//    public Iterable<String> certificateOfElimination(String team)  // subset R of teams that eliminates given team; null if not eliminated
+    /**
+     * Determine whether a given team is eliminated?
+     *
+     * @param team Team name.
+     * @return True if a given team is eliminated, else False.
+     */
+    public boolean isEliminated(String team) {
+        int teamIdx = this.resolveTeam(team);
+        return this.isTriviallyEliminated(teamIdx) || this.isNominallyEliminated(teamIdx);
+    }
+
+    /**
+     * Subset R of teams that eliminates given team.
+     *
+     * @param team Team name.
+     * @return Collection of teams names that eliminates given team; null if not eliminated.
+     */
+    public Iterable<String> certificateOfElimination(String team) {
+        throw new IllegalArgumentException("NOT implemented");
+    }
 
     private int resolveTeam(String teamName) {
         if (teamName == null) {
@@ -127,5 +146,79 @@ public class BaseballElimination {
         } else {
             throw new IllegalArgumentException("Unknown team " + teamName);
         }
+    }
+
+    private boolean isTriviallyEliminated(int team) {
+        int teamMaxPossibleWins = this.wins[team] + this.left[team];
+        for (int i = 0; i < this.numOfTeams; i++) {
+            if (i == team && this.wins[i] > teamMaxPossibleWins) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean isNominallyEliminated(int team) {
+        FlowNetwork network = createFlowNetwork(team);
+        // TODO: implement
+        return false;
+    }
+
+    private FlowNetwork createFlowNetwork(int teamX) {
+        // We make team vertices match team IDs, thereby simplify matching between team and team vertex and
+        // hence simplify search for certificate of elimination.
+        //
+        // We do not need to come back to game vertices, therefore we do not care what indices they will get,
+        // as long as they are in the range and valid.
+        // We start game vertices right after team max id which is exactly number of teams.
+        int nextGamesVertex = this.numOfTeams;
+        int vertexSource = this.sourceVertex(); // Total number of vertices - 2
+        int vertexTarget = this.targetVertex(); // Total number of vertices - 1
+        FlowNetwork network = new FlowNetwork(vertexTarget + 1);
+
+        int maxPossibleWinsOfTeamX = this.wins[teamX] + this.left[teamX];
+
+        for (int i = 0; i < this.numOfTeams; i++) {
+            if (i == teamX) {
+                continue;
+            }
+
+            // Below loop adds edges corresponding to all possible games between all teams except for team x
+            for (int j = i + 1; j < this.numOfTeams; j++) {
+                if (j == teamX) {
+                    continue;
+                }
+
+                // Connect source and game vertices.
+                network.addEdge(new FlowEdge(vertexSource, nextGamesVertex, this.games[i][j]));
+                // Connect game vertex with team vertices.
+                network.addEdge(new FlowEdge(nextGamesVertex, i, Double.POSITIVE_INFINITY));
+                network.addEdge(new FlowEdge(nextGamesVertex, j, Double.POSITIVE_INFINITY));
+                nextGamesVertex++;
+            }
+
+            // Connect team vertex to target vertex.
+            // We want to know if there is some way of completing all the games so that team x ends up winning at least
+            // as many games as team i. Since team x can win as many as this.wins[x] + this.left[x] games, we prevent
+            // team i from winning more than that many games in total, by including an edge from team vertex i to the
+            // target vertex with capacity  this.wins[x] + this.left[x] - this.win[i].
+            network.addEdge(new FlowEdge(i, vertexTarget, Math.max(maxPossibleWinsOfTeamX - this.wins[i], 0)));
+        }
+
+        return network;
+    }
+
+    private int sourceVertex() {
+        int totalGameVerticesCnt = (((this.numOfTeams * this.numOfTeams) - this.numOfTeams) / 2) - this.numOfTeams + 1;
+        // Source vertex starts after all game vertices and all team vertices.
+        // Team vertices are from 0 to this.numOfTeams - 1.
+        // Vertex ids are 0 based, therefore we do not add 1;
+        return totalGameVerticesCnt + this.numOfTeams;
+    }
+
+    private int targetVertex() {
+        // Target vertex haves next index to source vertex;
+        return this.sourceVertex() + 1;
     }
 }
