@@ -230,12 +230,20 @@ public class TestBaseballElimination {
     void testCertificateOfEliminationWithFourTeamsWhenMontrealIsEliminated() {
         // GIVEN
         BaseballElimination bm = new BaseballElimination(fileFourTeams);
-        ArrayList<String> expectedCertificateOfElimination = new ArrayList<>();
+        HashSet<String> expectedCertificateOfElimination = new HashSet<>();
         expectedCertificateOfElimination.add("Atlanta");
+        expectedCertificateOfElimination.add("Philadelphia");
+        expectedCertificateOfElimination.add("New_York");
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination("Montreal");
         //THEN
-        assertIterableEquals(expectedCertificateOfElimination, certificateOfElimination);
+        List<String> certificateOfEliminationActual =  StreamSupport
+                .stream(certificateOfElimination.spliterator(), false)
+                .collect(Collectors.toList());
+        assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());
+        for (String actual : certificateOfEliminationActual) {
+            assertTrue(expectedCertificateOfElimination.contains(actual));
+        }
     }
 
     @ParameterizedTest

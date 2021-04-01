@@ -6,14 +6,14 @@ import edu.princeton.cs.algs4.Queue;
 
 import java.util.Arrays;
 
-public class FordFulkerson {
+public class MyFordFulkerson {
     private final FlowNetwork network;
     private final FlowEdge[] edgeTo;
     private final boolean[] visited;
     private Queue<Integer> vertices;
     private double networkFlow = 0.0;
 
-    public FordFulkerson(FlowNetwork network) {
+    public MyFordFulkerson(FlowNetwork network) {
         this.network = network;
         this.vertices = new Queue<>();
         this.edgeTo = new FlowEdge[this.network.V()];

@@ -140,7 +140,7 @@ public class BaseballElimination {
      */
     public Iterable<String> certificateOfElimination(String team) {
         int teamX = this.resolveTeam(team);
-        FordFulkerson fordFulkerson = new FordFulkerson(createFlowNetwork(teamX));
+        MyFordFulkerson fordFulkerson = new MyFordFulkerson(createFlowNetwork(teamX));
         fordFulkerson.run(this.sourceVertex(), this.targetVertex());
         ArrayList<String> certificateOfEliminationTeams = new ArrayList<>();
 
@@ -178,7 +178,7 @@ public class BaseballElimination {
     }
 
     private boolean isNominallyEliminated(int teamX) {
-        FordFulkerson fordFulkerson = new FordFulkerson(createFlowNetwork(teamX));
+        MyFordFulkerson fordFulkerson = new MyFordFulkerson(createFlowNetwork(teamX));
         fordFulkerson.run(this.sourceVertex(), this.targetVertex());
         for (int i = 0; i < this.numOfTeams; i++) {
             if (i != teamX) {
