@@ -5,8 +5,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +29,7 @@ public class TestBaseballElimination {
     void testTeams() {
         // GIVEN
         BaseballElimination bm = new BaseballElimination(fileFourTeams);
-        Set<String> expectedTeams = new HashSet<String>();
+        Set<String> expectedTeams = new HashSet<>();
         expectedTeams.add("Atlanta");
         expectedTeams.add("Philadelphia");
         expectedTeams.add("New_York");
@@ -170,12 +171,107 @@ public class TestBaseballElimination {
     @ParameterizedTest
     @CsvSource({
             "Atlanta , false",
-            "Philadelphia,false",
+            "Philadelphia,true",
             "New_York, false",
             "Montreal, true",
     })
-    void testIsEliminated(String team, boolean expectedIsEliminates) {
+    void testIsEliminatedWithFourTeams(String team, boolean expectedIsEliminates) {
         BaseballElimination bm = new BaseballElimination(fileFourTeams);
         assertEquals(expectedIsEliminates, bm.isEliminated(team));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "New_York , false",
+            "Baltimore,false",
+            "Boston, false",
+            "Toronto, false",
+            "Detroit, true",
+    })
+    void testIsEliminatedWithFiveTeams(String team, boolean expectedIsEliminates) {
+        BaseballElimination bm = new BaseballElimination(fileFiveTeams);
+        assertEquals(expectedIsEliminates, bm.isEliminated(team));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "Atlanta",
+            "New_York",
+    })
+    void testCertificateOfEliminationWithFourTeamsWhenNotEliminated(String team) {
+        // GIVEN
+        BaseballElimination bm = new BaseballElimination(fileFourTeams);
+        // WHEN
+        Iterable<String> certificateOfElimination = bm.certificateOfElimination(team);
+        // THEN
+        assertFalse(certificateOfElimination.iterator().hasNext());
+    }
+
+    @Test
+    void testCertificateOfEliminationWithFourTeamsWhenPhiladelphiaIsEliminated() {
+        // GIVEN
+        BaseballElimination bm = new BaseballElimination(fileFourTeams);
+        HashSet<String> expectedCertificateOfElimination = new HashSet<>();
+        expectedCertificateOfElimination.add("Atlanta");
+        expectedCertificateOfElimination.add("New_York");
+        // WHEN
+        Iterable<String> certificateOfElimination = bm.certificateOfElimination("Philadelphia");
+        //THEN
+        List<String> certificateOfEliminationActual =  StreamSupport
+                .stream(certificateOfElimination.spliterator(), false)
+                .collect(Collectors.toList());
+        assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());
+        for (String actual : certificateOfEliminationActual) {
+            assertTrue(expectedCertificateOfElimination.contains(actual));
+        }
+    }
+
+    @Test
+    void testCertificateOfEliminationWithFourTeamsWhenMontrealIsEliminated() {
+        // GIVEN
+        BaseballElimination bm = new BaseballElimination(fileFourTeams);
+        ArrayList<String> expectedCertificateOfElimination = new ArrayList<>();
+        expectedCertificateOfElimination.add("Atlanta");
+        // WHEN
+        Iterable<String> certificateOfElimination = bm.certificateOfElimination("Montreal");
+        //THEN
+        assertIterableEquals(expectedCertificateOfElimination, certificateOfElimination);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "New_York",
+            "Baltimore",
+            "Boston",
+            "Toronto"
+    })
+    void testCertificateOfEliminationWithFiveTeamsWhenNotEliminated(String team) {
+        // GIVEN
+        BaseballElimination bm = new BaseballElimination(fileFiveTeams);
+        // WHEN
+        Iterable<String> certificateOfElimination = bm.certificateOfElimination(team);
+        // THEN
+        assertFalse(certificateOfElimination.iterator().hasNext());
+    }
+
+    @Test
+    void testCertificateOfEliminationWithFiveTeamsWhenDetroitIsEliminated() {
+        // GIVEN
+        BaseballElimination bm = new BaseballElimination(fileFiveTeams);
+        HashSet<String> expectedCertificateOfElimination = new HashSet<>();
+        expectedCertificateOfElimination.add("New_York");
+        expectedCertificateOfElimination.add("Boston");
+        expectedCertificateOfElimination.add("Baltimore");
+        expectedCertificateOfElimination.add("Toronto");
+        // WHEN
+        Iterable<String> certificateOfElimination = bm.certificateOfElimination("Detroit");
+        //THEN
+        List<String> certificateOfEliminationActual =  StreamSupport
+                .stream(certificateOfElimination.spliterator(), false)
+                .collect(Collectors.toList());
+        assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());
+        for (String actual : certificateOfEliminationActual) {
+            assertTrue(expectedCertificateOfElimination.contains(actual));
+        }
     }
 }

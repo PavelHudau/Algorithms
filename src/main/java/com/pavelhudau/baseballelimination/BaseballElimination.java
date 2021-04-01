@@ -5,9 +5,12 @@ import edu.princeton.cs.algs4.FlowNetwork;
 import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.ST;
 
+import java.util.ArrayList;
+
 public class BaseballElimination {
     private final int numOfTeams;
     private final ST<String, Integer> teamsToIdx;
+    private final String[] teams;
     private final int[] wins;
     private final int[] loss;
     private final int[] left;
@@ -43,9 +46,11 @@ public class BaseballElimination {
         this.left = new int[this.numOfTeams];
         this.games = new int[this.numOfTeams][this.numOfTeams];
         this.teamsToIdx = new ST<>();
+        this.teams = new String[this.numOfTeams];
         for (int teamIdx = 0; teamIdx < numOfTeams; teamIdx++) {
             String teamName = in.readString();
             this.teamsToIdx.put(teamName, teamIdx);
+            this.teams[teamIdx] = teamName;
             this.wins[teamIdx] = in.readInt();
             this.loss[teamIdx] = in.readInt();
             this.left[teamIdx] = in.readInt();
@@ -134,7 +139,20 @@ public class BaseballElimination {
      * @return Collection of teams names that eliminates given team; null if not eliminated.
      */
     public Iterable<String> certificateOfElimination(String team) {
-        throw new IllegalArgumentException("NOT implemented");
+        int teamX = this.resolveTeam(team);
+        FordFulkerson fordFulkerson = new FordFulkerson(createFlowNetwork(teamX));
+        fordFulkerson.run(this.sourceVertex(), this.targetVertex());
+        ArrayList<String> certificateOfEliminationTeams = new ArrayList<>();
+
+        for (int i = 0; i < this.numOfTeams; i++) {
+            if (i != teamX) {
+                if (fordFulkerson.inMinCut(i)) {
+                    certificateOfEliminationTeams.add(this.teams[i]);
+                }
+            }
+        }
+
+        return certificateOfEliminationTeams;
     }
 
     private int resolveTeam(String teamName) {
@@ -159,9 +177,18 @@ public class BaseballElimination {
         return false;
     }
 
-    private boolean isNominallyEliminated(int team) {
-        FlowNetwork network = createFlowNetwork(team);
-        // TODO: implement
+    private boolean isNominallyEliminated(int teamX) {
+        FordFulkerson fordFulkerson = new FordFulkerson(createFlowNetwork(teamX));
+        fordFulkerson.run(this.sourceVertex(), this.targetVertex());
+        for (int i = 0; i < this.numOfTeams; i++) {
+            if (i != teamX) {
+                // If team i is in a min cut then it means that team i has still games to play (there is still residual
+                // value of one of team's i game edges) but the team i already won more games than teamX can possibly do
+                // (Edge [team i -> target] has no residual value left).
+                return fordFulkerson.inMinCut(i);
+            }
+        }
+
         return false;
     }
 
@@ -210,11 +237,12 @@ public class BaseballElimination {
     }
 
     private int sourceVertex() {
-        int totalGameVerticesCnt = (((this.numOfTeams * this.numOfTeams) - this.numOfTeams) / 2) - this.numOfTeams + 1;
+        // total combination - diagonal (self with self) / half
+        int totalGameVerticesCnt = (this.numOfTeams * this.numOfTeams - this.numOfTeams) / 2;
         // Source vertex starts after all game vertices and all team vertices.
         // Team vertices are from 0 to this.numOfTeams - 1.
         // Vertex ids are 0 based, therefore we do not add 1;
-        return totalGameVerticesCnt + this.numOfTeams;
+        return totalGameVerticesCnt + 1;
     }
 
     private int targetVertex() {
