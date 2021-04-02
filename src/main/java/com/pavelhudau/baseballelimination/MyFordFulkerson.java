@@ -13,21 +13,18 @@ public class MyFordFulkerson {
     private Queue<Integer> vertices;
     private double networkFlow = 0.0;
 
-    public MyFordFulkerson(FlowNetwork network) {
+    public MyFordFulkerson(FlowNetwork network, int source, int target) {
         this.network = network;
         this.vertices = new Queue<>();
         this.edgeTo = new FlowEdge[this.network.V()];
         this.visited = new boolean[this.network.V()];
+        this.run(source, target);
     }
 
-    public void run(int source, int target) {
-        while (this.hasAugmentingPathUsingBfs(source, target)) {
-            double bottleneck = this.computeBottleneckCapacity(source, target);
-            this.applyBottleneckCapacity(source, target, bottleneck);
-            networkFlow += bottleneck;
-        }
-    }
-
+    /**
+     * Network maximum flow.
+     * @return Network maximum flow.
+     */
     public double flow() {
         return this.networkFlow;
     }
@@ -38,13 +35,21 @@ public class MyFordFulkerson {
      * @param vertex A vertex.
      * @return True if vertex is in min cut, else False.
      */
-    public boolean inMinCut(int vertex) {
+    public boolean inCut(int vertex) {
         // After running Ford Fulkerson algorithm the last run will not be able to find Augmenting Path and will
         // mark all vertices that are reachable from source by following edges that still have residual value.
         // By definition min cut is a set of vertices connected to source by an undirected path
         // with no full forward or empty backward edges (residual value is greater than 0). And this is exactly how we
         // run BFS to find Augmenting Path.
         return this.visited[vertex];
+    }
+
+    private void run(int source, int target) {
+        while (this.hasAugmentingPathUsingBfs(source, target)) {
+            double bottleneck = this.computeBottleneckCapacity(source, target);
+            this.applyBottleneckCapacity(source, target, bottleneck);
+            networkFlow += bottleneck;
+        }
     }
 
     private boolean hasAugmentingPathUsingBfs(int source, int target) {

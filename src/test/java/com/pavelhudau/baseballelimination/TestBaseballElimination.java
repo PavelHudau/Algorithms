@@ -204,7 +204,7 @@ public class TestBaseballElimination {
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination(team);
         // THEN
-        assertFalse(certificateOfElimination.iterator().hasNext());
+        assertNull(certificateOfElimination);
     }
 
     @Test
@@ -232,8 +232,6 @@ public class TestBaseballElimination {
         BaseballElimination bm = new BaseballElimination(fileFourTeams);
         HashSet<String> expectedCertificateOfElimination = new HashSet<>();
         expectedCertificateOfElimination.add("Atlanta");
-        expectedCertificateOfElimination.add("Philadelphia");
-        expectedCertificateOfElimination.add("New_York");
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination("Montreal");
         //THEN
@@ -259,7 +257,7 @@ public class TestBaseballElimination {
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination(team);
         // THEN
-        assertFalse(certificateOfElimination.iterator().hasNext());
+        assertNull(certificateOfElimination);
     }
 
     @Test
