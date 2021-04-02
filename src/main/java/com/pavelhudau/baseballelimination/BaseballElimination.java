@@ -9,8 +9,8 @@ import edu.princeton.cs.algs4.ST;
 import java.util.ArrayList;
 
 public class BaseballElimination {
-    private static final int sourceVertex = 0;
-    private static final int targetVertex = 1;
+    private static final int SOURCE_VERTEX = 0;
+    private static final int TARGET_VERTEX = 1;
 
     private final int numOfTeams;
     private final ST<String, Integer> teamsToIdx;
@@ -202,7 +202,7 @@ public class BaseballElimination {
 
     private ArrayList<String> getNominalCertificateOfElimination(int teamX) {
         FlowNetwork network = createFlowNetwork(teamX);
-        FordFulkerson fordFulkerson = new FordFulkerson(network, sourceVertex, targetVertex);
+        FordFulkerson fordFulkerson = new FordFulkerson(network, SOURCE_VERTEX, TARGET_VERTEX);
         ArrayList<String> certificateOfElimination = new ArrayList<>();
 
         for (int teamI = 0; teamI < this.numOfTeams; teamI++) {
@@ -245,7 +245,7 @@ public class BaseballElimination {
                 }
 
                 // Connect source and game vertices.
-                network.addEdge(new FlowEdge(sourceVertex, nextGamesVertex, this.games[teamI][teamJ]));
+                network.addEdge(new FlowEdge(SOURCE_VERTEX, nextGamesVertex, this.games[teamI][teamJ]));
                 // Connect game vertex with team vertices.
                 network.addEdge(new FlowEdge(nextGamesVertex, teamToVertex(teamI, teamX), Double.POSITIVE_INFINITY));
                 network.addEdge(new FlowEdge(nextGamesVertex, teamToVertex(teamJ, teamX), Double.POSITIVE_INFINITY));
@@ -259,7 +259,7 @@ public class BaseballElimination {
             // target vertex with capacity  this.wins[x] + this.left[x] - this.win[i].
             network.addEdge(new FlowEdge(
                     teamToVertex(teamI, teamX),
-                    targetVertex,
+                    TARGET_VERTEX,
                     Math.max(maxPossibleWinsOfTeamX - this.wins[teamI], 0)));
         }
 
