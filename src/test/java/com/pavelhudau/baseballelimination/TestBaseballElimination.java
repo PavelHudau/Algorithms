@@ -217,7 +217,7 @@ public class TestBaseballElimination {
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination("Philadelphia");
         //THEN
-        List<String> certificateOfEliminationActual =  StreamSupport
+        List<String> certificateOfEliminationActual = StreamSupport
                 .stream(certificateOfElimination.spliterator(), false)
                 .collect(Collectors.toList());
         assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());
@@ -235,7 +235,7 @@ public class TestBaseballElimination {
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination("Montreal");
         //THEN
-        List<String> certificateOfEliminationActual =  StreamSupport
+        List<String> certificateOfEliminationActual = StreamSupport
                 .stream(certificateOfElimination.spliterator(), false)
                 .collect(Collectors.toList());
         assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());
@@ -272,7 +272,7 @@ public class TestBaseballElimination {
         // WHEN
         Iterable<String> certificateOfElimination = bm.certificateOfElimination("Detroit");
         //THEN
-        List<String> certificateOfEliminationActual =  StreamSupport
+        List<String> certificateOfEliminationActual = StreamSupport
                 .stream(certificateOfElimination.spliterator(), false)
                 .collect(Collectors.toList());
         assertEquals(expectedCertificateOfElimination.size(), certificateOfEliminationActual.size());

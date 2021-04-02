@@ -23,6 +23,7 @@ public class MyFordFulkerson {
 
     /**
      * Network maximum flow.
+     *
      * @return Network maximum flow.
      */
     public double flow() {
