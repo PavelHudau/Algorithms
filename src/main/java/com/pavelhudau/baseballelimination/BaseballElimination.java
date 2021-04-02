@@ -220,13 +220,15 @@ public class BaseballElimination {
     }
 
     private FlowNetwork createFlowNetwork(int teamX) {
-
-        // We make team vertices match team IDs, thereby simplify matching between team and team vertex and
-        // hence simplify search for certificate of elimination.
-        //
-        // We do not need to come back to game vertices, therefore we do not care what indices they will get,
+        // Vertices are assigned the following way:
+        // 0 => Source
+        // 1 => Target
+        // 2 .. N - 2 => Teams Vertices where
+        //   N - 1 => teams less the team we are checking elimination for
+        //   N - 2 => because vertices are 0-based.
+        // N - 1 .. END => Games vertices. We start game vertices right after team vertices. We do not need to come
+        // back to the game vertices, therefore we do not care what indices they will get,
         // as long as they are in the range and valid.
-        // We start game vertices right after team max id which is exactly number of teams.
         int nextGamesVertex = 2 + this.numOfTeams - 1;
         FlowNetwork network = new FlowNetwork(nextGamesVertex + this.totalGameVertices());
         int maxPossibleWinsOfTeamX = this.wins[teamX] + this.left[teamX];
@@ -255,7 +257,10 @@ public class BaseballElimination {
             // as many games as team i. Since team x can win as many as this.wins[x] + this.left[x] games, we prevent
             // team i from winning more than that many games in total, by including an edge from team vertex i to the
             // target vertex with capacity  this.wins[x] + this.left[x] - this.win[i].
-            network.addEdge(new FlowEdge(teamToVertex(teamI, teamX), targetVertex, Math.max(maxPossibleWinsOfTeamX - this.wins[teamI], 0)));
+            network.addEdge(new FlowEdge(
+                    teamToVertex(teamI, teamX),
+                    targetVertex,
+                    Math.max(maxPossibleWinsOfTeamX - this.wins[teamI], 0)));
         }
 
         return network;
