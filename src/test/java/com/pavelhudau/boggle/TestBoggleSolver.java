@@ -1,6 +1,7 @@
 package com.pavelhudau.boggle;
 
 import edu.princeton.cs.algs4.In;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -8,8 +9,11 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBoggleSolver {
+    private static final String RESOURCES_PATH = "src/main/resources/boggle/";
     private static final String DICTIONARY_ALGS_4_TXT = "dictionary-algs4.txt";
+    private static final String BOARD_4_X_4 = "board4x4.txt";
     private static BoggleSolver dictAlg4Solver;
+
 
     @ParameterizedTest
     @CsvSource({
@@ -47,6 +51,14 @@ public class TestBoggleSolver {
         assertEquals(expectedScore, solver.scoreOf(word));
     }
 
+    @Test
+    void testGetAllValidWords() {
+        BoggleSolver solver = getDictAlg4Solver();
+        Iterable<String> words = solver.getAllValidWords(getBoggleBoard4x4());
+        assertNotNull(words);
+
+    }
+
     private static BoggleSolver getDictAlg4Solver() {
         if (dictAlg4Solver == null) {
             dictAlg4Solver = new BoggleSolver(readDictionary(DICTIONARY_ALGS_4_TXT));
@@ -56,7 +68,11 @@ public class TestBoggleSolver {
     }
 
     private static String[] readDictionary(String fileName) {
-        In in = new In("src/main/resources/boggle/" + fileName);
+        In in = new In(RESOURCES_PATH + fileName);
         return in.readAllStrings();
+    }
+
+    private static BoggleBoard getBoggleBoard4x4() {
+        return new BoggleBoard(RESOURCES_PATH + BOARD_4_X_4);
     }
 }
