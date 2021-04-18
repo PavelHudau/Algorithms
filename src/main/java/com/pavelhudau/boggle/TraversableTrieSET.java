@@ -36,7 +36,7 @@ public class TraversableTrieSET {
             node.isWord = true;
         } else {
             char currentChar = word.charAt(currentCharIdx);
-            node.next[currentChar] = this.add(node.next[currentChar], word, currentCharIdx + 1);
+            node.setNext(currentChar, this.add(node.getNext(currentChar), word, currentCharIdx + 1));
         }
 
         return node;
@@ -51,20 +51,31 @@ public class TraversableTrieSET {
             return currentNode;
         } else {
             char currentChar = word.charAt(currentCharIdx);
-            return this.get(currentNode.next[currentChar], word, currentCharIdx + 1);
+            return this.get(currentNode.getNext(currentChar), word, currentCharIdx + 1);
         }
     }
 
     static class Node {
-        private final TraversableTrieSET.Node[] next = new Node[256];
+        private final static int NODES_COUNT = 'Z' - 'A' + 1;
+        private final Node[] next = new Node[NODES_COUNT];
         private boolean isWord;
-
-        public TraversableTrieSET.Node getNext(char character) {
-            return this.next[character];
-        }
 
         public boolean isDictionaryWord() {
             return this.isWord;
+        }
+
+        public Node getNext(char character) {
+            int index = character - 'A';
+            if (index > -1 && index < NODES_COUNT) {
+                return this.next[character - 'A'];
+            }
+            else {
+                return null;
+            }
+        }
+
+        public Node setNext(char character, Node node) {
+            return this.next[character - 'A'] = node;
         }
     }
 }
