@@ -37,11 +37,11 @@ public class BoggleSolver {
     /**
      * Calculates the set of all valid words in the given Boggle board, as an Iterable.
      *
-     * @param board Boggle board.
+     * @param boggleBoard Boggle board.
      * @return The set of all valid words in the given Boggle board, as an Iterable.
      */
-    public Iterable<String> getAllValidWords(BoggleBoard board) {
-        this.board = board;
+    public Iterable<String> getAllValidWords(BoggleBoard boggleBoard) {
+        this.board = boggleBoard;
         this.boardGraph = this.createBoardGraph();
         this.foundWords = new TrieSET();
 
