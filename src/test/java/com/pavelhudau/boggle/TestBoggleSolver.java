@@ -6,6 +6,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBoggleSolver {
@@ -53,10 +55,17 @@ public class TestBoggleSolver {
 
     @Test
     void testGetAllValidWords() {
+        // GIVEN
         BoggleSolver solver = getDictAlg4Solver();
-        Iterable<String> words = solver.getAllValidWords(getBoggleBoard4x4());
-        assertNotNull(words);
 
+        // WHEN
+        Set<String> words = new HashSet<>();
+        solver.getAllValidWords(getBoggleBoard4x4()).forEach(words::add);
+
+        // THEN
+        assertTrue(words.contains("TYPE"));
+        assertFalse(words.contains("TYPED"));
+        assertFalse(words.contains("AT")); // Should not contain words or length 2 or less
     }
 
     private static BoggleSolver getDictAlg4Solver() {

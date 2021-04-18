@@ -88,10 +88,12 @@ public class BoggleSolver {
                 // 0-2
                 return 0;
             }
+
             if (length < 5) {
                 // 3-4
                 return 1;
             }
+
             // 5
             return 2;
         } else {
@@ -99,10 +101,12 @@ public class BoggleSolver {
                 // 8+
                 return 11;
             }
+
             if (length > 6) {
                 // 7
                 return 5;
             }
+
             // 6
             return 3;
         }
@@ -119,6 +123,7 @@ public class BoggleSolver {
                     // left to right edge
                     graph.addEdge(currentVertex, this.boardIdToVertex(r, c + 1));
                 }
+
                 if (r < lastRow) {
                     // top to bottom edge
                     graph.addEdge(currentVertex, this.boardIdToVertex(r + 1, c));
@@ -126,6 +131,7 @@ public class BoggleSolver {
                         // diagonal to bottom left
                         graph.addEdge(currentVertex, this.boardIdToVertex(r + 1, c - 1));
                     }
+
                     if (c < lastCol) {
                         // diagonal to bottom left
                         graph.addEdge(currentVertex, this.boardIdToVertex(r + 1, c + 1));
@@ -140,7 +146,7 @@ public class BoggleSolver {
     private void findAllWordsWithDfs(int vertex, char[] word, int currentCharIdx, TraversableTrieSET.Node currentDictionaryNode) {
         char currentTile = this.getBoardTileByVertex(vertex);
         currentDictionaryNode = currentDictionaryNode.getNext(currentTile);
-        if(currentDictionaryNode == null) {
+        if (currentDictionaryNode == null) {
             // Dictionary doesn't have prefix, so there is no reason to continue.
             return;
         }
@@ -154,10 +160,11 @@ public class BoggleSolver {
         // a 5-letter word even though it is formed by following a sequence of only 4 dice.
         if (currentTile == 'Q') {
             currentDictionaryNode = currentDictionaryNode.getNext('U');
-            if(currentDictionaryNode == null) {
+            if (currentDictionaryNode == null) {
                 // Dictionary doesn't have prefix, so there is no reason to continue.
                 return;
             }
+
             word[++currentCharIdx] = 'U';
         }
 
@@ -167,7 +174,9 @@ public class BoggleSolver {
             return;
         }
 
-        if (currentDictionaryNode.isDictionaryWord()) {
+        // If the word is in the dictionary and it's length is greater than 2.
+        // We exclude words with length of 2 or less because their score is 0;
+        if (currentDictionaryNode.isDictionaryWord() && currentCharIdx > 1) {
             String currentWord = String.copyValueOf(word, 0, currentCharIdx + 1);
             this.foundWords.add(currentWord);
         }
