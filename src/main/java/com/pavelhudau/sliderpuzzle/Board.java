@@ -51,7 +51,7 @@ public class Board {
     }
 
     /**
-     * Calculates dimention of the Board
+     * Calculates dimension of the Board
      *
      * @return dimension
      */
@@ -95,7 +95,7 @@ public class Board {
      * Two boards are equal if they are have the same size and their corresponding tiles are in the same positions.
      * The equals() method is inherited from java.lang.Object, so it must obey all of Java’s requirements.
      *
-     * @param y Other board
+     * @param y Other board.
      * @return is the Board equal to y?
      */
     public boolean equals(Object y) {
