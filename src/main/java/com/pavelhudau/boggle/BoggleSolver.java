@@ -168,7 +168,7 @@ public class BoggleSolver {
             word[++currentCharIdx] = 'U';
         }
 
-        if (currentCharIdx + 1 == this.maxWordLength) {
+        if (currentCharIdx == this.maxWordLength) {
             // Current word is longer than longest word in the dictionary, hence the word is definitely not in the
             // dictionary, therefore there is no reason to continue.
             return;

@@ -13,7 +13,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestBoggleSolver {
     private static final String RESOURCES_PATH = "src/main/resources/boggle/";
     private static final String DICTIONARY_ALGS_4_TXT = "dictionary-algs4.txt";
+    private static final String DICTIONARY_YAWL = "dictionary-yawl.txt";
     private static final String BOARD_4_X_4 = "board4x4.txt";
+    private static final String BOARD_EXOTIC = "board-pneumonoultramicroscopicsilicovolcanoconiosis.txt";
     private static BoggleSolver dictAlg4Solver;
 
 
@@ -60,12 +62,26 @@ public class TestBoggleSolver {
 
         // WHEN
         Set<String> words = new HashSet<>();
-        solver.getAllValidWords(getBoggleBoard4x4()).forEach(words::add);
+        solver.getAllValidWords(new BoggleBoard(RESOURCES_PATH + BOARD_4_X_4)).forEach(words::add);
 
         // THEN
         assertTrue(words.contains("TYPE"));
         assertFalse(words.contains("TYPED"));
         assertFalse(words.contains("AT")); // Should not contain words or length 2 or less
+    }
+
+    @Test
+    void testGetAllValidWordsCanFindLongestWord() {
+        // GIVEN
+        BoggleSolver solver = new BoggleSolver(readDictionary(DICTIONARY_YAWL));
+
+        // WHEN
+        Set<String> words = new HashSet<>();
+        solver.getAllValidWords(new BoggleBoard(RESOURCES_PATH + BOARD_EXOTIC)).forEach(words::add);
+
+        // THEN
+        assertEquals(65, words.size());
+        assertTrue(words.contains("PNEUMONOULTRAMICROSCOPICSILICOVOLCANOCONIOSIS"));
     }
 
     private static BoggleSolver getDictAlg4Solver() {
@@ -79,9 +95,5 @@ public class TestBoggleSolver {
     private static String[] readDictionary(String fileName) {
         In in = new In(RESOURCES_PATH + fileName);
         return in.readAllStrings();
-    }
-
-    private static BoggleBoard getBoggleBoard4x4() {
-        return new BoggleBoard(RESOURCES_PATH + BOARD_4_X_4);
     }
 }
