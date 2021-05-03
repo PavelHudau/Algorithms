@@ -1,7 +1,6 @@
 package com.pavelhudau.burrowswheeler;
 
-import edu.princeton.cs.algs4.BinaryStdOut;
-import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.*;
 
 public class BurrowsWheeler {
     /**
@@ -12,7 +11,7 @@ public class BurrowsWheeler {
         BurrowsWheeler bw = new BurrowsWheeler();
         TransformResult result = bw.transform(StdIn.readAll());
         BinaryStdOut.write(result.originalStrIndex);
-        for (char ch: result.transformedChars) {
+        for (char ch : result.transformedChars) {
             BinaryStdOut.write(ch);
         }
     }
@@ -22,7 +21,12 @@ public class BurrowsWheeler {
      * reading from standard input and writing to standard output.
      */
     public static void inverseTransform() {
-
+        BurrowsWheeler bw = new BurrowsWheeler();
+        int originalStrIndex = BinaryStdIn.readInt();
+        char[] result = bw.inverseTransform(originalStrIndex, StdIn.readString().toCharArray());
+        for (char ch : result) {
+            BinaryStdOut.write(ch);
+        }
     }
 
     TransformResult transform(String input) {
@@ -32,16 +36,67 @@ public class BurrowsWheeler {
 
         for (int i = 0; i < transformedChars.length; i++) {
             int originalIndex = csa.index(i);
-            if(originalIndex == 0) {
+            if (originalIndex == 0) {
                 originalStrIdx = i;
                 transformedChars[i] = input.charAt(input.length() - 1);
-            }
-            else {
+            } else {
                 transformedChars[i] = input.charAt(csa.index(i) - 1);
             }
         }
 
         return new TransformResult(originalStrIdx, transformedChars);
+    }
+
+    char[] inverseTransform(int originalStrIndex, char[] transformedChars) {
+        int[] nextArray = constructNextArray(transformedChars);
+        char[] inverseTransformed = new char[transformedChars.length];
+        int next = originalStrIndex;
+        for (int i = 0; i < inverseTransformed.length; i++) {
+            inverseTransformed[i] = transformedChars[nextArray[next]];
+            next = nextArray[next];
+        }
+
+        return inverseTransformed;
+    }
+
+    private static char[] reconstructFirstSuffixesColumn(char[] encoded) {
+        Character[] sorted = new Character[encoded.length];
+        for (int i = 0; i < encoded.length; i++) {
+            sorted[i] = encoded[i];
+        }
+
+        Quick.sort(sorted);
+        char[] firstColInSuffixes = new char[sorted.length];
+        for (int i = 0; i < sorted.length; i++) {
+            firstColInSuffixes[i] = sorted[i];
+        }
+
+        return firstColInSuffixes;
+    }
+
+    private static int[] constructNextArray(char[] transformedChars) {
+        char[] firstSuffixesCol = reconstructFirstSuffixesColumn(transformedChars);
+        ST<Character, MinPQ<Integer>> transformedCharsPositionMap = createCharPositionMap(transformedChars);
+        int[] nextArray = new int[firstSuffixesCol.length];
+        for (int i = 0; i < firstSuffixesCol.length; i++) {
+            char firstColChar = firstSuffixesCol[i];
+            MinPQ<Integer> suffixPos = transformedCharsPositionMap.get(firstColChar);
+            nextArray[i] = suffixPos.delMin();
+        }
+        return nextArray;
+    }
+
+    private static ST<Character, MinPQ<Integer>> createCharPositionMap(char[] chars) {
+        ST<Character, MinPQ<Integer>> map = new ST<>();
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            if (!map.contains(chars[i])) {
+                map.put(ch, new MinPQ<>());
+            }
+            map.get(ch).insert(i);
+        }
+
+        return map;
     }
 
     /**
@@ -64,7 +119,7 @@ public class BurrowsWheeler {
         }
     }
 
-    class TransformResult {
+    static class TransformResult {
         final int originalStrIndex;
         final char[] transformedChars;
 
