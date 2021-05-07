@@ -96,14 +96,14 @@ public class CircularSuffixArray {
             this.threeWayStringQuickSort(midHi + 1, hi, sortPosition);
         }
 
-        private void exchange(int one, int two) {
-            String tmpSuffixOne = this.suffixes[one];
-            this.suffixes[one] = this.suffixes[two];
-            this.suffixes[two] = tmpSuffixOne;
+        private void exchange(int first, int second) {
+            String tmpSuffixOne = this.suffixes[first];
+            this.suffixes[first] = this.suffixes[second];
+            this.suffixes[second] = tmpSuffixOne;
 
-            int tmpIdxOne = this.indices[one];
-            this.indices[one] = this.indices[two];
-            this.indices[two] = tmpIdxOne;
+            int tmpIdxOne = this.indices[first];
+            this.indices[first] = this.indices[second];
+            this.indices[second] = tmpIdxOne;
         }
     }
 }

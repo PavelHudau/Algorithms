@@ -1,6 +1,10 @@
 package com.pavelhudau.burrowswheeler;
 
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.ST;
+import edu.princeton.cs.algs4.BinaryStdIn;
+import edu.princeton.cs.algs4.BinaryStdOut;
+import edu.princeton.cs.algs4.Quick;
+import edu.princeton.cs.algs4.MinPQ;
 
 public class BurrowsWheeler {
     /**
@@ -9,11 +13,14 @@ public class BurrowsWheeler {
      */
     public static void transform() {
         BurrowsWheeler bw = new BurrowsWheeler();
-        TransformResult result = bw.transform(StdIn.readAll());
+        TransformResult result = bw.transformMe(BinaryStdIn.readString());
         BinaryStdOut.write(result.originalStrIndex);
         for (char ch : result.transformedChars) {
             BinaryStdOut.write(ch);
         }
+
+        BinaryStdIn.close();
+        BinaryStdOut.close();
     }
 
     /**
@@ -23,13 +30,16 @@ public class BurrowsWheeler {
     public static void inverseTransform() {
         BurrowsWheeler bw = new BurrowsWheeler();
         int originalStrIndex = BinaryStdIn.readInt();
-        char[] result = bw.inverseTransform(originalStrIndex, StdIn.readString().toCharArray());
+        char[] result = bw.inverseTransformMe(originalStrIndex, BinaryStdIn.readString().toCharArray());
         for (char ch : result) {
             BinaryStdOut.write(ch);
         }
+
+        BinaryStdIn.close();
+        BinaryStdOut.close();
     }
 
-    TransformResult transform(String input) {
+    private TransformResult transformMe(String input) {
         CircularSuffixArray csa = new CircularSuffixArray(input);
         char[] transformedChars = new char[csa.length()];
         int originalStrIdx = -1;
@@ -47,7 +57,7 @@ public class BurrowsWheeler {
         return new TransformResult(originalStrIdx, transformedChars);
     }
 
-    char[] inverseTransform(int originalStrIndex, char[] transformedChars) {
+    private char[] inverseTransformMe(int originalStrIndex, char[] transformedChars) {
         int[] nextArray = constructNextArray(transformedChars);
         char[] inverseTransformed = new char[transformedChars.length];
         int next = originalStrIndex;
@@ -119,7 +129,7 @@ public class BurrowsWheeler {
         }
     }
 
-    static class TransformResult {
+    private static class TransformResult {
         final int originalStrIndex;
         final char[] transformedChars;
 

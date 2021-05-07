@@ -1,80 +1,32 @@
 package com.pavelhudau.burrowswheeler;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestMoveToFront {
 
-    @Test
-    void testEncodeAndDecode() {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "ABRACADABRA!",
+            "AAA",
+            "A"
+    })
+    void testEncodeAndDecode(String initialStr) {
         // GIVEN
-        String initialStr = "ABRACADABRA!";
-        MoveToFront encoder = new MoveToFront();
-        MoveToFront decoder = new MoveToFront();
+        StdInOutHelper inOutHelperEncode = new StdInOutHelper(initialStr);
 
         // WHEN
-        char[] encoded = new char[initialStr.length()];
-        for (int i = 0; i < initialStr.length(); i++) {
-            encoded[i] = encoder.encodeChar(initialStr.charAt(i));
-        }
+        MoveToFront.main(new String[]{"-"}); // Encode
+        byte[] encoded = inOutHelperEncode.readOutputAndClose();
 
-        char[] decoded = new char[encoded.length];
-        for (int i = 0; i < encoded.length; i++) {
-            decoded[i] = decoder.decodeChar(encoded[i]);
-        }
-
-        String resultStr = new String(decoded);
+        StdInOutHelper inOutHelperDecode = new StdInOutHelper(encoded);
+        MoveToFront.main(new String[]{"+"}); // Decode
+        byte[] decoded = inOutHelperDecode.readOutputAndClose();
+        String decodedStr = new String(decoded);
 
         // THEN
-        assertEquals(initialStr, resultStr);
-    }
-
-    @Test
-    void testEncodeAndDecodeWhenAllCharsAreSame() {
-        // GIVEN
-        String initialStr = "AAA";
-        MoveToFront encoder = new MoveToFront();
-        MoveToFront decoder = new MoveToFront();
-
-        // WHEN
-        char[] encoded = new char[initialStr.length()];
-        for (int i = 0; i < initialStr.length(); i++) {
-            encoded[i] = encoder.encodeChar(initialStr.charAt(i));
-        }
-
-        char[] decoded = new char[encoded.length];
-        for (int i = 0; i < encoded.length; i++) {
-            decoded[i] = decoder.decodeChar(encoded[i]);
-        }
-
-        String resultStr = new String(decoded);
-
-        // THEN
-        assertEquals(initialStr, resultStr);
-    }
-
-    @Test
-    void testEncodeAndDecodeWhenOnlySingleChar() {
-        // GIVEN
-        String initialStr = "A";
-        MoveToFront encoder = new MoveToFront();
-        MoveToFront decoder = new MoveToFront();
-
-        // WHEN
-        char[] encoded = new char[initialStr.length()];
-        for (int i = 0; i < initialStr.length(); i++) {
-            encoded[i] = encoder.encodeChar(initialStr.charAt(i));
-        }
-
-        char[] decoded = new char[encoded.length];
-        for (int i = 0; i < encoded.length; i++) {
-            decoded[i] = decoder.decodeChar(encoded[i]);
-        }
-
-        String resultStr = new String(decoded);
-
-        // THEN
-        assertEquals(initialStr, resultStr);
+        assertEquals(initialStr, decodedStr);
     }
 }

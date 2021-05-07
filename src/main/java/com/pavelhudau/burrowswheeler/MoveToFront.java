@@ -21,6 +21,9 @@ public class MoveToFront {
             char ch = BinaryStdIn.readChar();
             BinaryStdOut.write(mtf.encodeChar(ch));
         }
+
+        BinaryStdIn.close();
+        BinaryStdOut.close();
     }
 
     /**
@@ -32,15 +35,18 @@ public class MoveToFront {
             char chPosition = BinaryStdIn.readChar();
             BinaryStdOut.write(mtf.decodeChar(chPosition));
         }
+
+        BinaryStdIn.close();
+        BinaryStdOut.close();
     }
 
-    char encodeChar(char ch) {
+    private char encodeChar(char ch) {
         int chPosition = this.findPosition(ch);
         this.moveToFront(chPosition);
         return (char) chPosition;
     }
 
-    char decodeChar(char charPosition) {
+    private char decodeChar(char charPosition) {
         char ch = this.chars[charPosition];
         this.moveToFront(charPosition);
         return ch;

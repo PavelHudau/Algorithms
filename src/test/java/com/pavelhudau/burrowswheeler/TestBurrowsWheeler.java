@@ -1,91 +1,55 @@
 package com.pavelhudau.burrowswheeler;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestBurrowsWheeler {
-    @Test
-    void testTransform() {
+    @ParameterizedTest
+    @CsvSource({
+            "ABRACADABRA!, ARD!RCAAAABB, 3",
+            "AAA, AAA, 0",
+            "A, A, 0"
+    })
+    void testTransform(String inputStr, String expectedTransformedStr, int expectedOriginalStrIndex) {
         // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
+        StdInOutHelper inOutTransform = new StdInOutHelper(inputStr);
 
         // WHEN
-        BurrowsWheeler.TransformResult result = bw.transform("ABRACADABRA!");
+        BurrowsWheeler.main(new String[]{"+"});
+        byte[] transformed = inOutTransform.readOutputAndClose();
 
         // THEN
-        assertEquals(3, result.originalStrIndex);
-        char[] expectedTransformedChars = new char[]{'A', 'R', 'D', '!', 'R', 'C', 'A', 'A', 'A', 'A', 'B', 'B'};
-        assertArrayEquals(expectedTransformedChars, result.transformedChars);
+        BytesReader transformedReader = new BytesReader(transformed);
+        int originalStrIndex = transformedReader.readInt();
+        String transformedStr = transformedReader.readString();
+        transformedReader.close();
+
+        assertEquals(expectedOriginalStrIndex, originalStrIndex);
+        assertEquals(expectedTransformedStr, transformedStr);
     }
 
-    @Test
-    void testInverseTransform() {
+    @ParameterizedTest
+    @CsvSource({
+            "ARD!RCAAAABB, 3, ABRACADABRA!",
+            "AAA, 0, AAA",
+            "A, 0, A"
+    })
+    void testInverseTransform(String transformedStr, int originalStrIndex, String expectedInverseTransformedStr) {
         // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
-        char[] transformedChars = new char[]{'A', 'R', 'D', '!', 'R', 'C', 'A', 'A', 'A', 'A', 'B', 'B'};
+        BytesWriter transformedWriter = new BytesWriter();
+        transformedWriter.write(originalStrIndex);
+        transformedWriter.write(transformedStr);
+        byte[] transformed = transformedWriter.readBytesAndClose();
 
         // WHEN
-        char[] inverseTransformedChars = bw.inverseTransform(3, transformedChars);
+        StdInOutHelper inOutInverseTransform = new StdInOutHelper(transformed);
+        BurrowsWheeler.main(new String[]{"-"});
+        byte[] inverseTransformed = inOutInverseTransform.readOutputAndClose();
+        String inverseTransformedStr = new String(inverseTransformed);
 
         // THEN
-        char[] expectedInverseTransformedChars = new char[]{'A', 'B', 'R', 'A', 'C', 'A', 'D', 'A', 'B', 'R', 'A', '!'};
-        assertArrayEquals(expectedInverseTransformedChars, inverseTransformedChars);
-    }
-
-    @Test
-    void testTransformWhenAllCharactersAreSame() {
-        // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
-
-        // WHEN
-        BurrowsWheeler.TransformResult result = bw.transform("AAA");
-
-        // THEN
-        assertEquals(0, result.originalStrIndex);
-        char[] expectedTransformedChars = new char[]{'A', 'A', 'A'};
-        assertArrayEquals(expectedTransformedChars, result.transformedChars);
-    }
-
-    @Test
-    void testInverseTransformWhenAllCharactersAreSame() {
-        // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
-        char[] transformedChars = new char[]{'A', 'A', 'A'};
-
-        // WHEN
-        char[] inverseTransformedChars = bw.inverseTransform(0, transformedChars);
-
-        // THEN
-        char[] expectedInverseTransformedChars = new char[]{'A', 'A', 'A'};
-        assertArrayEquals(expectedInverseTransformedChars, inverseTransformedChars);
-    }
-
-    @Test
-    void testTransformWhenOnlySingleChar() {
-        // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
-
-        // WHEN
-        BurrowsWheeler.TransformResult result = bw.transform("A");
-
-        // THEN
-        assertEquals(0, result.originalStrIndex);
-        char[] expectedTransformedChars = new char[]{'A'};
-        assertArrayEquals(expectedTransformedChars, result.transformedChars);
-    }
-
-    @Test
-    void testInverseTransformWhenOnlySingleChar() {
-        // GIVEN
-        BurrowsWheeler bw = new BurrowsWheeler();
-        char[] transformedChars = new char[]{'A'};
-
-        // WHEN
-        char[] inverseTransformedChars = bw.inverseTransform(0, transformedChars);
-
-        // THEN
-        char[] expectedInverseTransformedChars = new char[]{'A'};
-        assertArrayEquals(expectedInverseTransformedChars, inverseTransformedChars);
+        assertEquals(expectedInverseTransformedStr, inverseTransformedStr);
     }
 }
