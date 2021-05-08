@@ -123,10 +123,10 @@ public class BurrowsWheeler {
     public static void main(String[] args) {
         switch (args[0]) {
             case "-":
-                inverseTransform();
+                transform();
                 break;
             case "+":
-                transform();
+                inverseTransform();
                 break;
             default:
                 throw new IllegalArgumentException("Argument must be '-' or '+'");

@@ -18,7 +18,7 @@ public class TestBurrowsWheeler {
         StdInOutHelper inOutTransform = new StdInOutHelper(inputStr);
 
         // WHEN
-        BurrowsWheeler.main(new String[]{"+"});
+        BurrowsWheeler.main(new String[]{"-"});
         byte[] transformed = inOutTransform.readOutputAndClose();
 
         // THEN
@@ -46,7 +46,7 @@ public class TestBurrowsWheeler {
 
         // WHEN
         StdInOutHelper inOutInverseTransform = new StdInOutHelper(transformed);
-        BurrowsWheeler.main(new String[]{"-"});
+        BurrowsWheeler.main(new String[]{"+"});
         byte[] inverseTransformed = inOutInverseTransform.readOutputAndClose();
         String inverseTransformedStr = new String(inverseTransformed);
 
@@ -66,11 +66,11 @@ public class TestBurrowsWheeler {
 
         // WHEN
         StdInOutHelper inOutInTransform = new StdInOutHelper(originalBytes);
-        BurrowsWheeler.main(new String[]{"+"});
+        BurrowsWheeler.main(new String[]{"-"});
         byte[] transformedBytes = inOutInTransform.readOutputAndClose();
 
         StdInOutHelper inOutInverseTransform = new StdInOutHelper(transformedBytes);
-        BurrowsWheeler.main(new String[]{"-"});
+        BurrowsWheeler.main(new String[]{"+"});
         byte[] inverseTransformed = inOutInverseTransform.readOutputAndClose();
 
         // THEN
