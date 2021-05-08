@@ -14,6 +14,10 @@ public class BytesWriter {
         System.setOut(printStream);
     }
 
+    public void write(char value) {
+        BinaryStdOut.write(value);
+    }
+
     public void write(int value) {
         BinaryStdOut.write(value);
     }

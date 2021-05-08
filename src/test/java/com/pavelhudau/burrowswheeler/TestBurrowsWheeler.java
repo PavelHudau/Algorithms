@@ -1,9 +1,10 @@
 package com.pavelhudau.burrowswheeler;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestBurrowsWheeler {
     @ParameterizedTest
@@ -51,5 +52,28 @@ public class TestBurrowsWheeler {
 
         // THEN
         assertEquals(expectedInverseTransformedStr, inverseTransformedStr);
+    }
+
+    @Test
+    void testTransformAndInverseTransformOfAllChars() {
+        // GIVEN
+        BytesWriter originalBytesWriter = new BytesWriter();
+        for (char c = 0; c <= 255; c++) {
+            originalBytesWriter.write(c);
+        }
+
+        byte[] originalBytes = originalBytesWriter.readBytesAndClose();
+
+        // WHEN
+        StdInOutHelper inOutInTransform = new StdInOutHelper(originalBytes);
+        BurrowsWheeler.main(new String[]{"+"});
+        byte[] transformedBytes = inOutInTransform.readOutputAndClose();
+
+        StdInOutHelper inOutInverseTransform = new StdInOutHelper(transformedBytes);
+        BurrowsWheeler.main(new String[]{"-"});
+        byte[] inverseTransformed = inOutInverseTransform.readOutputAndClose();
+
+        // THEN
+        assertArrayEquals(originalBytes, inverseTransformed);
     }
 }

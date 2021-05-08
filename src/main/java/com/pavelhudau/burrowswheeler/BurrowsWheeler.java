@@ -30,7 +30,11 @@ public class BurrowsWheeler {
     public static void inverseTransform() {
         BurrowsWheeler bw = new BurrowsWheeler();
         int originalStrIndex = BinaryStdIn.readInt();
-        char[] result = bw.inverseTransformMe(originalStrIndex, BinaryStdIn.readString().toCharArray());
+        StringBuilder transformedChars = new StringBuilder();
+        while (!BinaryStdIn.isEmpty()) {
+            transformedChars.append(BinaryStdIn.readChar());
+        }
+        char[] result = bw.inverseTransformMe(originalStrIndex, transformedChars);
         for (char ch : result) {
             BinaryStdOut.write(ch);
         }
@@ -57,22 +61,22 @@ public class BurrowsWheeler {
         return new TransformResult(originalStrIdx, transformedChars);
     }
 
-    private char[] inverseTransformMe(int originalStrIndex, char[] transformedChars) {
+    private char[] inverseTransformMe(int originalStrIndex, StringBuilder transformedChars) {
         int[] nextArray = constructNextArray(transformedChars);
-        char[] inverseTransformed = new char[transformedChars.length];
+        char[] inverseTransformed = new char[transformedChars.length()];
         int next = originalStrIndex;
         for (int i = 0; i < inverseTransformed.length; i++) {
-            inverseTransformed[i] = transformedChars[nextArray[next]];
+            inverseTransformed[i] = transformedChars.charAt(nextArray[next]);
             next = nextArray[next];
         }
 
         return inverseTransformed;
     }
 
-    private static char[] reconstructFirstSuffixesColumn(char[] encoded) {
-        Character[] sorted = new Character[encoded.length];
-        for (int i = 0; i < encoded.length; i++) {
-            sorted[i] = encoded[i];
+    private static char[] reconstructFirstSuffixesColumn(StringBuilder encoded) {
+        Character[] sorted = new Character[encoded.length()];
+        for (int i = 0; i < encoded.length(); i++) {
+            sorted[i] = encoded.charAt(i);
         }
 
         Quick.sort(sorted);
@@ -84,7 +88,7 @@ public class BurrowsWheeler {
         return firstColInSuffixes;
     }
 
-    private static int[] constructNextArray(char[] transformedChars) {
+    private static int[] constructNextArray(StringBuilder transformedChars) {
         char[] firstSuffixesCol = reconstructFirstSuffixesColumn(transformedChars);
         ST<Character, MinPQ<Integer>> transformedCharsPositionMap = createCharPositionMap(transformedChars);
         int[] nextArray = new int[firstSuffixesCol.length];
@@ -96,11 +100,11 @@ public class BurrowsWheeler {
         return nextArray;
     }
 
-    private static ST<Character, MinPQ<Integer>> createCharPositionMap(char[] chars) {
+    private static ST<Character, MinPQ<Integer>> createCharPositionMap(StringBuilder chars) {
         ST<Character, MinPQ<Integer>> map = new ST<>();
-        for (int i = 0; i < chars.length; i++) {
-            char ch = chars[i];
-            if (!map.contains(chars[i])) {
+        for (int i = 0; i < chars.length(); i++) {
+            char ch = chars.charAt(i);
+            if (!map.contains(chars.charAt(i))) {
                 map.put(ch, new MinPQ<>());
             }
             map.get(ch).insert(i);
